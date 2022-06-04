@@ -7,8 +7,23 @@ import (
 )
 
 type Connection struct {
-	ip  string   // IP address of the Onkyo receiver
-	con net.Conn // Connection is stored here
+	ip          string   // IP address of the Onkyo receiver
+	con         net.Conn // Connection is stored here
+	iscpVersion byte     // ISCP version (default 0x1) (should not need changed)
+	iscpDest    byte     // ISCP destination (default 0x31)
+}
+
+// Creates a new Onkyo stereo
+func Onkyo(ip string) *Connection {
+	device := new(Connection)
+	device.ip = ip
+	device.iscpVersion = 0x1
+	device.iscpDest = 0x31
+
+	// connect
+	device.Connect()
+
+	return device
 }
 
 // Establish connection to eISCP service. Returns true if connection was successful.
@@ -47,8 +62,8 @@ func (c *Connection) Disconnect() {
 // Sends command to receiver. Returns response as STRING, and BOOL for success
 func (c *Connection) SendCmd(command string) (string, bool) {
 	cmd := OnkyoCommand{}
-	cmd.Version = 0x1
-	cmd.Destination = 0x31 // Communicate with main, not an RI-enabled device
+	cmd.Version = c.iscpVersion
+	cmd.Destination = c.iscpDest
 	cmd.Command = []byte(command)
 
 	// Send command
