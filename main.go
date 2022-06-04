@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 
 	x := &Connection{}
@@ -11,10 +9,7 @@ func main() {
 	x.Connect()
 	defer x.Disconnect()
 
-	//fmt.Println(x.GetPower())
-
-	fmt.Println(x.SetPower(true))
-
 	//fmt.Println(x.SetVolume(10))
-
+	//fmt.Println(x.SetMute(false))
+	//fmt.Println(x.GetAudioInfo())
 }

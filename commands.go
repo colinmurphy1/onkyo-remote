@@ -26,19 +26,60 @@ func (c *Connection) SetPower(status bool) bool {
 	return ok
 }
 
-// Sets the volume of the receiver. Returns uint with new volume level
-func (c *Connection) SetVolume(vol uint) uint {
+// Sets the volume of the receiver. Returns true if successful
+func (c *Connection) SetVolume(vol uint) bool {
 
 	// convert volume to hexadecimal
 	volHex := string(fmt.Sprintf("%02x", vol))
 	volHex = strings.ToUpper(volHex)
 
-	//res, _ := c.SendCmd("MVL" + volHex)
+	res, _ := c.SendCmd("MVL" + volHex)
 
-	/*
-		if res == "!1MVL"+volHex {
+	// Look for proper response
+	if res == "!1MVL"+volHex {
+		return true
+	}
+	return false
+}
 
-		}
-	*/
-	return 0
+// Get device name
+func (c *Connection) GetDeviceName() string {
+	panic("Not Implemented")
+	//name, _ := c.SendCmd("NDNQSTN")
+
+	//return string(name)
+}
+
+// Mute audio. Returns TRUE if successful
+func (c *Connection) SetMute(mute bool) bool {
+	cmd := "AMT00" // Mute off
+	if mute {
+		cmd = "AMT01" // Mute on
+	}
+	_, ok := c.SendCmd(cmd)
+
+	return ok
+}
+
+// Returns information about the audio source in a hashmap. If successful, also
+// returns true.
+func (c *Connection) GetAudioInfo() (map[string]string, bool) {
+	res, ok := c.SendCmd("IFAQSTN")
+
+	if !ok {
+		return nil, false
+	}
+
+	res = res[5:]                 // Remove the !1IFA from the string
+	si := strings.Split(res, ",") // Split the output into an array
+
+	sourceInfo := make(map[string]string)
+	sourceInfo["InputPort"] = si[0]
+	sourceInfo["InputFormat"] = si[1]
+	sourceInfo["SamplingFrequency"] = si[3]
+	sourceInfo["InputSignalChannel"] = si[4]
+	sourceInfo["ListenMode"] = si[5]
+	sourceInfo["OutputSignalChannel"] = si[6]
+
+	return sourceInfo, true
 }

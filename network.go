@@ -56,7 +56,7 @@ func (c *Connection) SendCmd(command string) (string, bool) {
 	_ = slen // We don't care about the response length
 	if err != nil {
 		c.Disconnect() // Close session
-		return "", false
+		panic("Could not connect to receiver")
 	}
 
 	buffer := make([]byte, 1024)    // Response is stored here
@@ -67,7 +67,6 @@ func (c *Connection) SendCmd(command string) (string, bool) {
 	if string(buffer[:4]) != "ISCP" {
 		c.Disconnect() // Close session
 		panic("Invalid response from receiver")
-		//return "", false
 	}
 
 	// Split the header and response, giving only the response
