@@ -25,3 +25,9 @@ Get information about the current source in a hashmap
 
 This will return:  
 `map[InputFormat: InputPort:NETWORK InputSignalChannel:Stereo ListenMode:2.0 ch OutputSignalChannel: SamplingFrequency:]`
+
+## Useful information
+
+I use Wireshark for debugging this library. To only inspect EISCP traffic, use this filter:
+
+    tcp.port == 60128 && ip.dst == 192.168.1.180
