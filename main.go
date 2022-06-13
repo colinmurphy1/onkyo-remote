@@ -1,11 +1,15 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/colinmurphy1/onkyo-remote/eiscp"
+)
 
 func main() {
 
 	// Connect to the receiver at 192.168.1.180
-	onkyo := Onkyo("192.168.1.180")
+	onkyo := eiscp.Onkyo("192.168.1.180")
 
 	fmt.Println(onkyo.GetAudioInfo())
 
