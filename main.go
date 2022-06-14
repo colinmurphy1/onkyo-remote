@@ -1,21 +1,36 @@
 package main
 
 import (
-	"fmt"
+	_ "net/http"
 
+	"github.com/colinmurphy1/onkyo-remote/api"
+	"github.com/colinmurphy1/onkyo-remote/config"
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
+	"github.com/gin-gonic/gin"
 )
+
+var router *gin.Engine
+var routes *gin.RouterGroup
 
 func main() {
 
-	// Connect to the receiver at 192.168.1.180
-	onkyo := eiscp.Onkyo("192.168.1.180")
+	// Disconnect from the receiver when the software terminates
+	defer eiscp.Conn.Disconnect()
 
-	fmt.Println(onkyo.GetAudioInfo())
+	// Set up router
+	router = gin.Default()
 
-	defer onkyo.Disconnect()
+	// Create a router group
+	routes = router.Group("/api")
+	{
+		// POWER
+		routes.GET("/power", api.GetPowerStatus)
+		routes.GET("/power/set/:status", api.SetPowerStatus)
 
-	//fmt.Println(x.SetVolume(10))
-	//fmt.Println(x.SetMute(false))
-	//fmt.Println(x.GetAudioInfo())
+		// VOLUME
+		routes.GET("/volume/set/:volume", api.SetVolume)
+	}
+
+	// Start http server
+	router.Run(":" + config.Conf.HTTP_PORT)
 }

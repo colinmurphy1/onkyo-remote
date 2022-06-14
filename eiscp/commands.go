@@ -31,7 +31,7 @@ func (c *Connection) SetVolume(vol uint) bool {
 
 	// convert volume to hexadecimal
 	volHex := string(fmt.Sprintf("%02x", vol))
-	volHex = strings.ToUpper(volHex)
+	volHex = strings.ToUpper(volHex) // must be uppercase per onkyo spec
 
 	res, _ := c.SendCmd("MVL" + volHex)
 

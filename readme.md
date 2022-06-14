@@ -1,33 +1,24 @@
-# Go Onkyo Library
+# Onkyo Remote
 
-## Examples
+By Colin Murphy, 2022
 
-Create a new receiver at IP 192.168.1.180, and disconnect when the program is done with it
+This application exposes the eISCP protocol Onkyo home audio equipment uses into
+a REST API. It utilizes a self-built library that communicates with a receiver.
 
-    dev := Onkyo("192.168.1.180")
-    defer dev.Disconnect()
+For a work in progress API reference, see `api.md`.
+
+## Usage
+
+Set the receiver's IP address, and optionally the port the web server listens
+on.
+
+    export RECEIVER_IP="192.168.1.180"
+    export HTTP_PORT="8080"
+
+Start the service...
+
+    go run main.go
 
 
-Power the receiver on or off
-
-    dev.SetPower(true)
-    dev.SetPower(false)
-
-Set the volume to 25, or mute it
-
-    dev.SetVolume(25)
-    dev.SetMute(true)
-
-Get information about the current source in a hashmap
-
-    info, _ := x.GetAudioInfo())
-    fmt.Println(info)
-
-This will return:  
-`map[InputFormat: InputPort:NETWORK InputSignalChannel:Stereo ListenMode:2.0 ch OutputSignalChannel: SamplingFrequency:]`
-
-## Useful information
-
-I use Wireshark for debugging this library. To only inspect EISCP traffic, use this filter:
-
-    tcp.port == 60128 && ip.dst == 192.168.1.180
+Open a web browser and navigate to http://localhost:8080/api/power. You should
+get a response returning the power status of the receiver.

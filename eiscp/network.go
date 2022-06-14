@@ -2,6 +2,7 @@ package eiscp
 
 import (
 	"bytes"
+	"log"
 	"net"
 	"strings"
 )
@@ -28,12 +29,15 @@ func Onkyo(ip string) *Connection {
 
 // Establish connection to eISCP service. Returns true if connection was successful.
 func (c *Connection) Connect() bool {
+
+	log.Printf("Connecting to device at %s", c.ip)
+
 	con, err := net.Dial("tcp", c.ip+":60128")
 
 	// Check for connection errors
 	if err != nil {
+		log.Fatal("Could not connect to device: ", err)
 		c.Disconnect() // Close session
-		panic(err)
 	}
 
 	// Check for proper response
@@ -42,13 +46,14 @@ func (c *Connection) Connect() bool {
 	_ = rlen                      // Don't use the response length
 
 	if err != nil {
+		log.Fatal("Could not connect to device: ", err)
 		c.Disconnect() // Close session
-		panic(err)
 	}
 
 	// If the response of ISCP is returned, connection is successful
 	if string(buffer[:4]) == "ISCP" {
 		c.con = con // Store the connection in the struct
+		log.Println("Connected!")
 		return true
 	}
 	return false
@@ -56,6 +61,7 @@ func (c *Connection) Connect() bool {
 
 // Close connection to receiver
 func (c *Connection) Disconnect() {
+	log.Printf("Disconnecting from device at %s", c.ip)
 	c.con.Close()
 }
 
@@ -67,11 +73,14 @@ func (c *Connection) SendCmd(command string) (string, bool) {
 	cmd.Command = []byte(command)
 
 	// Send command
+
+	log.Println("SEND: ", string(cmd.Command))
+
 	slen, err := c.con.Write(cmd.EiscpCommand())
 	_ = slen // We don't care about the response length
 	if err != nil {
+		log.Fatal("Could not connect to device: ", err)
 		c.Disconnect() // Close session
-		panic("Could not connect to receiver")
 	}
 
 	buffer := make([]byte, 1024)    // Response is stored here
@@ -80,8 +89,8 @@ func (c *Connection) SendCmd(command string) (string, bool) {
 
 	// Verify that the command is valid
 	if string(buffer[:4]) != "ISCP" {
+		log.Fatal("Could not connect to device: ", err)
 		c.Disconnect() // Close session
-		panic("Invalid response from receiver")
 	}
 
 	// Split the header and response, giving only the response
@@ -94,6 +103,8 @@ func (c *Connection) SendCmd(command string) (string, bool) {
 	if strings.HasSuffix(response, "N/A") {
 		return response, false
 	}
+
+	log.Println("RECV: ", response)
 
 	return response, true
 }
