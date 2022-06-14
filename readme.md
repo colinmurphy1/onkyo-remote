@@ -22,3 +22,11 @@ Start the service...
 
 Open a web browser and navigate to http://localhost:8080/api/power. You should
 get a response returning the power status of the receiver.
+
+
+## Debugging
+
+I use Wireshark for debugging the network activity between this application
+and my stereo receiver. To only inspect EISCP traffic, use this filter:
+
+    tcp.port == 60128 && ip.dst == receiver_ip_addr
