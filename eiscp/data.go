@@ -64,10 +64,10 @@ type Tuner struct {
 
 // Input names
 var Inputs = map[string]string{
-	"00": "VIDEO1",
+	"00": "VCR/DVR",
 	"01": "CBL/SAT",
 	"02": "GAME",
-	"03": "VIDEO4",
+	"03": "AUX",
 	"05": "PC",
 	"10": "BD/DVD",
 	"11": "STRM BOX",
