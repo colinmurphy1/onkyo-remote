@@ -23,12 +23,15 @@ func main() {
 	// Create a router group
 	routes = router.Group("/api")
 	{
+		// STATUS
+		routes.GET("/status", api.GetStatus)
+
 		// POWER
-		routes.GET("/power", api.GetPowerStatus)
 		routes.GET("/power/set/:status", api.SetPowerStatus)
 
 		// VOLUME
 		routes.GET("/volume/set/:volume", api.SetVolume)
+		routes.GET("/volume/mute/:mute", api.SetMute)
 	}
 
 	// Start http server
