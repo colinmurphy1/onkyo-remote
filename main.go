@@ -25,7 +25,7 @@ func main() {
 		routes.GET("/status", api.GetStatus)
 
 		// POWER
-		routes.GET("/power/set/:status", api.SetPowerStatus)
+		routes.GET("/power/:status", api.SetPowerStatus)
 
 		// VOLUME
 		routes.GET("/volume/level/:volume", api.SetVolume)

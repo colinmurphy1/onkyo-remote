@@ -21,17 +21,13 @@ func SetPowerStatus(c *gin.Context) {
 		return
 	}
 
-	powerStatus, err := eiscp.Conn.SetPower(set)
+	err := eiscp.Conn.SetPower(set)
 
 	if err != nil {
 		help.Response(c, 500, "Error", err)
 		return
 	}
 
-	// Make response
-	res := make(map[string]bool)
-	res["power"] = powerStatus
-
-	help.Response(c, 200, "OK", res)
+	help.Response(c, 200, "OK", nil)
 
 }
