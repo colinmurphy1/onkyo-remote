@@ -19,17 +19,40 @@ func SetVolume(c *gin.Context) {
 		return
 	}
 
-	// Set the volume level
-	setVolume := eiscp.Conn.SetVolume(uint(volumeLevel))
+	setVolume, _ := eiscp.Conn.SetVolume(uint(volumeLevel))
 
-	if !setVolume {
-		// Could not set volume level
-		help.Response(c, 500, "Error setting volume level", nil)
+	res := make(map[string]int)
+	res["level"] = int(setVolume)
+
+	help.Response(c, 200, "OK", res)
+}
+
+func SetMute(c *gin.Context) {
+	status := c.Param("status")
+
+	var set bool
+
+	if status == "on" {
+		set = true
+	} else if status == "off" {
+		set = false
+	} else {
+		// Invalid option, send HTTP 400
+		help.Response(c, 400, "Bad Request", nil)
 		return
 	}
 
-	res := make(map[string]int)
-	res["level"] = int(volumeLevel)
+	muteStatus, err := eiscp.Conn.SetMute(set)
+
+	if err != nil {
+		help.Response(c, 500, "Error", err)
+		return
+	}
+
+	// Make response
+	res := make(map[string]bool)
+	res["mute"] = muteStatus
 
 	help.Response(c, 200, "OK", res)
+
 }

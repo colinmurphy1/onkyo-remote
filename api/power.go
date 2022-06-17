@@ -6,15 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Get power status of the receiver
-func GetPowerStatus(c *gin.Context) {
-
-	res := make(map[string]bool)
-	res["status"] = eiscp.Conn.GetPower()
-
-	help.Response(c, 200, "OK", res)
-}
-
 func SetPowerStatus(c *gin.Context) {
 	status := c.Param("status")
 
@@ -30,16 +21,17 @@ func SetPowerStatus(c *gin.Context) {
 		return
 	}
 
-	// Send power on/off command to receiver. SetPower returns true if it could
-	// send the power command to the receiver.
-	setPower := eiscp.Conn.SetPower(set)
+	powerStatus, err := eiscp.Conn.SetPower(set)
 
-	if !setPower {
-		help.Response(c, 500, "Could not set power status", nil)
+	if err != nil {
+		help.Response(c, 500, "Error", err)
+		return
 	}
 
-	// Generate an api response
+	// Make response
 	res := make(map[string]bool)
-	res["status"] = set
+	res["power"] = powerStatus
+
 	help.Response(c, 200, "OK", res)
+
 }

@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "net/http"
-
 	"github.com/colinmurphy1/onkyo-remote/api"
 	"github.com/colinmurphy1/onkyo-remote/config"
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
@@ -23,12 +21,15 @@ func main() {
 	// Create a router group
 	routes = router.Group("/api")
 	{
+		// STATUS
+		routes.GET("/status", api.GetStatus)
+
 		// POWER
-		routes.GET("/power", api.GetPowerStatus)
 		routes.GET("/power/set/:status", api.SetPowerStatus)
 
 		// VOLUME
-		routes.GET("/volume/set/:volume", api.SetVolume)
+		routes.GET("/volume/level/:volume", api.SetVolume)
+		routes.GET("/volume/mute/:status", api.SetMute)
 	}
 
 	// Start http server
