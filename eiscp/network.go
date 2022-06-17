@@ -87,8 +87,8 @@ func (c *Connection) SendCmd(command string) error {
 
 // Receives output from receiver
 func (c *Connection) RecvCmd() (string, error) {
-	// Read repsonse and store it in a 1024 byte buffer
-	buffer := make([]byte, 1024)
+	// Read repsonse and store it in a 2048 byte buffer
+	buffer := make([]byte, 2048)
 	_, err := c.con.Read(buffer)
 
 	if err != nil {
