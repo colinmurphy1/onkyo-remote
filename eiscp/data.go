@@ -16,6 +16,7 @@ type OnkyoStatus struct {
 	Power    Power    // Power status
 	Volume   Volume   // Volume status
 	SongInfo SongInfo // Song information
+	Tuner    Tuner    // Tuner status
 }
 
 type Power struct {
@@ -47,4 +48,10 @@ type SongTime struct {
 type SongTrack struct {
 	Current int
 	Total   int
+}
+
+// Tuner status
+type Tuner struct {
+	Frequency float64 // Tuner frequency
+	Preset    int     // Tuner preset
 }

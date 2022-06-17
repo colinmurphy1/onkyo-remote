@@ -1,8 +1,6 @@
 package main
 
 import (
-	_ "net/http"
-
 	"github.com/colinmurphy1/onkyo-remote/api"
 	"github.com/colinmurphy1/onkyo-remote/config"
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
@@ -30,7 +28,7 @@ func main() {
 		routes.GET("/power/set/:status", api.SetPowerStatus)
 
 		// VOLUME
-		routes.GET("/volume/set/:volume", api.SetVolume)
+		routes.GET("/volume/level/:volume", api.SetVolume)
 		routes.GET("/volume/mute/:mute", api.SetMute)
 	}
 

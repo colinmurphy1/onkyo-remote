@@ -141,6 +141,11 @@ func (c *Connection) EiscpWatcher() error {
 			}
 			c.Status.Power.Status = pwrStatus
 
+		// 12 Volt triggers A, B, and C. Ignored for now.
+		// This will be placed in the Power struct, data as 12VA, 12VB, 12VC, etc.
+		case "TGA", "TGB", "TGC":
+			continue
+
 		// Get volume level
 		case "MVL":
 			vol, err := strconv.ParseInt(cmdValue, 16, 64)
@@ -185,13 +190,17 @@ func (c *Connection) EiscpWatcher() error {
 			c.Status.SongInfo.Track.Current, _ = strconv.Atoi(ntr[0])
 			c.Status.SongInfo.Track.Total, _ = strconv.Atoi(ntr[1])
 
-		// 12 Volt triggers A, B, and C. Ignored for now.
-		// This will be placed in the Power struct, data as 12VA, 12VB, 12VC, etc.
-		case "TGA", "TGB", "TGC":
-			continue
+		// Tuner frequency
+		case "PRS":
+			c.Status.Tuner.Preset, _ = strconv.Atoi(cmdValue)
 
+		// Tuner preset
+		case "TUN":
+			c.Status.Tuner.Frequency, _ = strconv.ParseFloat(cmdValue, 64)
+
+		// Ignore unknown commands
 		default:
-			log.Println("Unknown command:", cmd)
+			continue
 		}
 	}
 }
