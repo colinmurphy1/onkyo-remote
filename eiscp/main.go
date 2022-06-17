@@ -16,5 +16,4 @@ func init() {
 	Conn.SendCmd("PWRQSTN")
 	Conn.SendCmd("MVLQSTN")
 	Conn.SendCmd("AMTQSTN")
-
 }

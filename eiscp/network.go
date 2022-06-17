@@ -7,7 +7,6 @@ import (
 	"net"
 	"strconv"
 	"strings"
-	"time"
 )
 
 // Creates a new Onkyo stereo
@@ -79,9 +78,6 @@ func (c *Connection) SendCmd(command string) error {
 		return err
 	}
 
-	// Per eISCP spec, allow 50+ ms for a response
-	time.Sleep(50 * time.Millisecond)
-
 	return nil
 }
 
@@ -140,11 +136,6 @@ func (c *Connection) EiscpWatcher() error {
 				pwrStatus = true
 			}
 			c.Status.Power.Status = pwrStatus
-
-		// 12 Volt triggers A, B, and C. Ignored for now.
-		// This will be placed in the Power struct, data as 12VA, 12VB, 12VC, etc.
-		case "TGA", "TGB", "TGC":
-			continue
 
 		// Get volume level
 		case "MVL":

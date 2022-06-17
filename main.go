@@ -29,7 +29,7 @@ func main() {
 
 		// VOLUME
 		routes.GET("/volume/level/:volume", api.SetVolume)
-		routes.GET("/volume/mute/:mute", api.SetMute)
+		routes.GET("/volume/mute/:status", api.SetMute)
 	}
 
 	// Start http server
