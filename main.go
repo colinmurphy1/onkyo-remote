@@ -31,7 +31,7 @@ func main() {
 		routes.GET("/volume/mute/:status", api.SetMute)
 
 		// SOURCE
-		routes.GET("/source/", api.GetSource)
+		routes.GET("/source", api.GetSource)
 		routes.GET("/source/:sourceID", api.SetSource)
 	}
 
