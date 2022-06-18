@@ -1,6 +1,7 @@
 package eiscp
 
 import (
+	"io/ioutil"
 	"log"
 
 	"github.com/colinmurphy1/onkyo-remote/config"
@@ -10,6 +11,12 @@ import (
 var Conn *Connection
 
 func init() {
+
+	// Disable logging if it is not enabled
+	if !config.Conf.ENABLE_LOGGING {
+		log.SetOutput(ioutil.Discard)
+	}
+
 	// Connect to the receiver
 	Conn = Onkyo(config.Conf.RECEIVER_IP)
 

@@ -11,9 +11,13 @@ var router *gin.Engine
 var routes *gin.RouterGroup
 
 func main() {
-
 	// Disconnect from the receiver when the software terminates
 	defer eiscp.Conn.Disconnect()
+
+	// Disable logging if not enabled
+	if !config.Conf.ENABLE_LOGGING {
+		gin.SetMode(gin.ReleaseMode) // Disable Gin logs
+	}
 
 	// Set up router
 	router = gin.Default()
