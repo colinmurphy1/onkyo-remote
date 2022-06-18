@@ -6,10 +6,10 @@ import (
 )
 
 type Config struct {
-	RECEIVER_IP    string // IP address or hostname of the receiver
-	HTTP_PORT      string // Port that the API and control panel listens on
-	ENABLE_REMOTE  bool   // Enable the web-based control panel
-	ENABLE_LOGGING bool   // Enable logging of eISCP commands
+	RECEIVER_IP   string // IP address or hostname of the receiver
+	HTTP_PORT     string // Port that the API and control panel listens on
+	ENABLE_REMOTE bool   // Enable the web-based control panel
+	EISCP_LOGGING bool   // Enable logging of eISCP commands
 }
 
 var Conf *Config
@@ -29,8 +29,8 @@ func init() {
 	// Set values, and assign a default one if it is not passed
 	Conf.RECEIVER_IP = getEnv("RECEIVER_IP", "0.0.0.0")
 	Conf.HTTP_PORT = getEnv("HTTP_PORT", "8080")
-	Conf.ENABLE_LOGGING, _ = strconv.ParseBool(
-		getEnv("ENABLE_LOGGING", "true"),
+	Conf.EISCP_LOGGING, _ = strconv.ParseBool(
+		getEnv("ISCP_LOGGING", "true"),
 	)
 	Conf.ENABLE_REMOTE, _ = strconv.ParseBool(
 		getEnv("ENABLE_REMOTE", "true"),

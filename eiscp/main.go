@@ -13,7 +13,7 @@ var Conn *Connection
 func init() {
 
 	// Disable logging if it is not enabled
-	if !config.Conf.ENABLE_LOGGING {
+	if !config.Conf.EISCP_LOGGING {
 		log.SetOutput(ioutil.Discard)
 	}
 

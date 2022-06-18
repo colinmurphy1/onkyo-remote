@@ -47,7 +47,6 @@ func (c *Connection) Connect() bool {
 	// If the response of ISCP is returned, connection is successful
 	if string(buffer[:4]) == "ISCP" {
 		c.con = con // Store the connection in the struct
-		log.Println("Connected!")
 		return true
 	}
 	return false
@@ -68,7 +67,7 @@ func (c *Connection) SendCmd(command string) error {
 
 	// Send command
 
-	log.Println("SEND: ", string(cmd.Command))
+	log.Println("SEND:", string(cmd.Command))
 
 	slen, err := c.con.Write(cmd.EiscpCommand())
 	_ = slen // We don't care about the response length
