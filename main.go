@@ -14,11 +14,6 @@ func main() {
 	// Disconnect from the receiver when the software terminates
 	defer eiscp.Conn.Disconnect()
 
-	// Disable logging if not enabled
-	if !config.Conf.ENABLE_LOGGING {
-		gin.SetMode(gin.ReleaseMode) // Disable Gin logs
-	}
-
 	// Set up router
 	router = gin.Default()
 
@@ -34,6 +29,10 @@ func main() {
 		// VOLUME
 		routes.GET("/volume/level/:volume", api.SetVolume)
 		routes.GET("/volume/mute/:status", api.SetMute)
+
+		// SOURCE
+		routes.GET("/source/", api.GetSource)
+		routes.GET("/source/:sourceID", api.SetSource)
 	}
 
 	// Start http server
