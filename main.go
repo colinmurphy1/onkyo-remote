@@ -11,7 +11,6 @@ var router *gin.Engine
 var routes *gin.RouterGroup
 
 func main() {
-
 	// Disconnect from the receiver when the software terminates
 	defer eiscp.Conn.Disconnect()
 
@@ -25,11 +24,15 @@ func main() {
 		routes.GET("/status", api.GetStatus)
 
 		// POWER
-		routes.GET("/power/set/:status", api.SetPowerStatus)
+		routes.GET("/power/:status", api.SetPowerStatus)
 
 		// VOLUME
 		routes.GET("/volume/level/:volume", api.SetVolume)
 		routes.GET("/volume/mute/:status", api.SetMute)
+
+		// SOURCE
+		routes.GET("/source", api.GetSource)
+		routes.GET("/source/:sourceID", api.SetSource)
 	}
 
 	// Start http server

@@ -8,7 +8,7 @@ import (
 
 // Turns receiver on or off
 // Returns a boolean with the new power status, and an error if one is present
-func (c *Connection) SetPower(status bool) (bool, error) {
+func (c *Connection) SetPower(status bool) error {
 	cmd := "PWR00"
 	if status {
 		cmd = "PWR01"
@@ -16,14 +16,10 @@ func (c *Connection) SetPower(status bool) (bool, error) {
 	err := c.SendCmd(cmd)
 
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	// Powering on/off a receiver returns multiple responses, so sleep for 250
-	// ms to allow some time for the receiver to respond.
-	time.Sleep(250 * time.Millisecond)
-
-	return c.Status.Power.Status, nil
+	return nil
 }
 
 // Sets volume level
@@ -62,3 +58,15 @@ func (c *Connection) SetMute(mute bool) (bool, error) {
 	// Return mute status
 	return c.Status.Volume.Mute, nil
 }
+
+/*
+func (c *Connection) SetSource(source string) (string, error) {
+	err := c.SendCmd("SLI" + source)
+	if err != nil {
+		return "", err
+	}
+
+	// Sleep for 200ms to allow command to process
+	time.Sleep(200 * time.Millisecond)
+}
+*/

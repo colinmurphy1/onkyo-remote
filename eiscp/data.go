@@ -14,6 +14,7 @@ type Connection struct {
 // Struct that stores the general status of the receiver
 type OnkyoStatus struct {
 	Power    Power    // Power status
+	Input    Input    // Input source
 	Volume   Volume   // Volume status
 	SongInfo SongInfo // Song information
 	Tuner    Tuner    // Tuner status
@@ -21,6 +22,11 @@ type OnkyoStatus struct {
 
 type Power struct {
 	Status bool // Power status
+}
+
+type Input struct {
+	Name    string // Input name
+	HexCode string // Input HEX code (for debugging, and future custom naming)
 }
 
 // Volume status
@@ -54,4 +60,33 @@ type SongTrack struct {
 type Tuner struct {
 	Frequency float64 // Tuner frequency
 	Preset    int     // Tuner preset
+}
+
+// Input names
+var Inputs = map[string]string{
+	"00": "VCR/DVR",
+	"01": "CBL/SAT",
+	"02": "GAME",
+	"03": "AUX",
+	"05": "PC",
+	"10": "BD/DVD",
+	"11": "STRM BOX",
+	"12": "TV",
+	"20": "TV/TAPE",
+	"22": "PHONO",
+	"23": "CD",
+	"24": "FM",
+	"25": "AM",
+	"26": "TUNER",
+	"27": "MUSIC SERVER",
+	"28": "INTERNET RADIO",
+	"29": "USB",
+	"31": "XM",
+	"32": "SIRIUS",
+	"33": "DAB",
+	"2B": "NETWORK",
+	"2C": "USB",
+	"2D": "AIRPLAY",
+	"2E": "BLUETOOTH",
+	"40": "UNIVERSAL PORT",
 }

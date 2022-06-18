@@ -5,7 +5,6 @@ import (
 	"errors"
 	"log"
 	"net"
-	"strconv"
 	"strings"
 )
 
@@ -48,7 +47,6 @@ func (c *Connection) Connect() bool {
 	// If the response of ISCP is returned, connection is successful
 	if string(buffer[:4]) == "ISCP" {
 		c.con = con // Store the connection in the struct
-		log.Println("Connected!")
 		return true
 	}
 	return false
@@ -69,7 +67,7 @@ func (c *Connection) SendCmd(command string) error {
 
 	// Send command
 
-	log.Println("SEND: ", string(cmd.Command))
+	log.Println("SEND:", string(cmd.Command))
 
 	slen, err := c.con.Write(cmd.EiscpCommand())
 	_ = slen // We don't care about the response length
@@ -111,87 +109,4 @@ func (c *Connection) RecvCmd() (string, error) {
 	log.Println("RECV:", response)
 
 	return response, nil
-}
-
-// Watches for responses from the receiver, and configures the status struct accordingly
-func (c *Connection) EiscpWatcher() error {
-	var response, cmd, cmdValue string
-	var err error
-
-	for {
-		response, err = c.RecvCmd() // Receive command from the receiver
-		if err != nil {
-			return err
-		}
-
-		cmd = response[2:5]     // iscp command
-		cmdValue = response[5:] // iscp command value
-
-		switch cmd {
-		// Get power status
-		case "PWR":
-			pwrStatus := false
-			// If the value is 01, the receiver is powered on
-			if cmdValue == "01" {
-				pwrStatus = true
-			}
-			c.Status.Power.Status = pwrStatus
-
-		// Get volume level
-		case "MVL":
-			vol, err := strconv.ParseInt(cmdValue, 16, 64)
-			if err != nil {
-				log.Println("Could not parse volume level:", err)
-				continue // ignore the error and don't continue
-			}
-			c.Status.Volume.Level = int(vol)
-
-		// Get mute status
-		case "AMT":
-			muteStatus := false
-
-			// If the value is 01, the receiver is muted
-			if cmdValue == "01" {
-				muteStatus = true
-			}
-
-			c.Status.Volume.Mute = muteStatus
-
-		// Get Song Title (NET/USB ONLY)
-		case "NTI":
-			c.Status.SongInfo.Title = cmdValue
-
-		// Get Artist (NET/USB ONLY)
-		case "NAT":
-			c.Status.SongInfo.Artist = cmdValue
-
-		// Get Album (NET/USB ONLY)
-		case "NAL":
-			c.Status.SongInfo.Album = cmdValue
-
-		// Get song time position and length
-		case "NTM":
-			ntm := strings.Split(cmdValue, "/")
-			c.Status.SongInfo.Time.Current = ntm[0]
-			c.Status.SongInfo.Time.Length = ntm[1]
-
-		// Track position
-		case "NTR":
-			ntr := strings.Split(cmdValue, "/")
-			c.Status.SongInfo.Track.Current, _ = strconv.Atoi(ntr[0])
-			c.Status.SongInfo.Track.Total, _ = strconv.Atoi(ntr[1])
-
-		// Tuner frequency
-		case "PRS":
-			c.Status.Tuner.Preset, _ = strconv.Atoi(cmdValue)
-
-		// Tuner preset
-		case "TUN":
-			c.Status.Tuner.Frequency, _ = strconv.ParseFloat(cmdValue, 64)
-
-		// Ignore unknown commands
-		default:
-			continue
-		}
-	}
 }
