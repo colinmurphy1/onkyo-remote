@@ -7,14 +7,15 @@ import (
 )
 
 // Watches for responses from the receiver, and configures the status struct accordingly
-func (c *Connection) EiscpWatcher() error {
+func (c *Connection) EiscpWatcher() {
 	var response, cmd, cmdValue string
 	var err error
 
 	for {
 		response, err = c.RecvCmd() // Receive command from the receiver
 		if err != nil {
-			return err
+			log.Println("RECV ERROR:", err)
+			continue // Recover from any errors
 		}
 
 		cmd = response[2:5]     // iscp command
@@ -78,6 +79,17 @@ func (c *Connection) EiscpWatcher() error {
 			ntr := strings.Split(cmdValue, "/")
 			c.Status.SongInfo.Track.Current, _ = strconv.Atoi(ntr[0])
 			c.Status.SongInfo.Track.Total, _ = strconv.Atoi(ntr[1])
+
+		// NET service
+		case "NMS":
+			// NET Source (see data.go for options)
+			// This does show other information (such as if you like a song),
+			// but this isn't going to be too useful for the controller.
+			if c.Status.Input.HexCode == "2B" {
+				c.Status.Input.NetSource = NetServices[cmdValue[7:9]]
+				continue
+			}
+			c.Status.Input.NetSource = ""
 
 		// Tuner frequency
 		case "PRS":

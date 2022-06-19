@@ -48,7 +48,7 @@ func init() {
 		"NTRQSTN",
 
 		// Enable album (jacket) art, and have it return a LINK instead of
-		// sending a jpeg or bmp image
+		// sending a jpeg or bmp image over eISCP
 		"NJAENA",
 		"NJALINK",
 	}

@@ -25,8 +25,9 @@ type Power struct {
 }
 
 type Input struct {
-	Name    string // Input name
-	HexCode string // Input HEX code (for debugging, and future custom naming)
+	Name      string // Input name
+	HexCode   string // Input HEX code (for debugging, and future custom naming)
+	NetSource string // NET Source (DLNA, AirPlay, Spotify, etc.) Leave blank if not in NET
 }
 
 // Volume status
@@ -89,4 +90,32 @@ var Inputs = map[string]string{
 	"2D": "AIRPLAY",
 	"2E": "BLUETOOTH",
 	"40": "UNIVERSAL PORT",
+}
+
+// NET Services
+var NetServices = map[string]string{
+	"00": "DLNA",
+	"01": "My Favorite",
+	"02": "vTuner",
+	"03": "SiriusXM",
+	"04": "Pandora",
+	"05": "Rhapsody",
+	"06": "Last.fm",
+	"07": "Slacker",
+	"0A": "Spotify",
+	"0B": "AUPEO!",
+	"0C": "radiko",
+	"0D": "e-onkyo",
+	"0E": "TuneIn",
+	"0F": "MP3tunes",
+	"10": "Simfy",
+	"11": "Home Media",
+	"12": "Deezer",
+	"13": "iHeartRadio",
+	"18": "Airplay",
+	"F0": "Front USB",
+	"F1": "Rear USB",
+	"F2": "Internet Radio",
+	"F3": "NET",
+	"F4": "Bluetooth",
 }
