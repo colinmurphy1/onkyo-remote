@@ -23,13 +23,34 @@ func init() {
 	// Start command watcher goroutine
 	go Conn.EiscpWatcher()
 
-	// Initialize OnkyoStatus struct by running QSTN commands on power status,
-	// volume level, input, song information, etc...
+	// Initialize OnkyoStatus struct by running QSTN commands.
 	// NOTE: It does not matter if you run a QSTN command with the receiver
 	// powered on or off, it'll answer with what it has stored.
 	startCommands := []string{
-		"PWRQSTN", "MVLQSTN", "AMTQSTN", "SLIQSTN", "PRSQSTN", "TUNQSTN",
-		"NTIQSTN", "NATQSTN", "NALQSTN", "NTRQSTN",
+		// Get power status
+		"PWRQSTN",
+
+		// Get volume level and muting status
+		"MVLQSTN",
+		"AMTQSTN",
+
+		// Get current source
+		"SLIQSTN",
+
+		// Get tuner preset and frequency
+		"PRSQSTN",
+		"TUNQSTN",
+
+		// Get NET song, album, artist, details
+		"NTIQSTN",
+		"NATQSTN",
+		"NALQSTN",
+		"NTRQSTN",
+
+		// Enable album (jacket) art, and have it return a LINK instead of
+		// sending a jpeg or bmp image
+		"NJAENA",
+		"NJALINK",
 	}
 	for i := 0; i < len(startCommands); i++ {
 		err := Conn.SendCmd(startCommands[i])

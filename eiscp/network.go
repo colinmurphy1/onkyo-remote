@@ -1,11 +1,11 @@
 package eiscp
 
 import (
-	"bytes"
+	"bufio"
+	"encoding/binary"
 	"errors"
 	"log"
 	"net"
-	"strings"
 )
 
 // Creates a new Onkyo stereo
@@ -42,14 +42,11 @@ func (c *Connection) Connect() bool {
 	if err != nil {
 		log.Fatal("Could not connect to device: ", err)
 		c.Disconnect() // Close session
+		return false
 	}
 
-	// If the response of ISCP is returned, connection is successful
-	if string(buffer[:4]) == "ISCP" {
-		c.con = con // Store the connection in the struct
-		return true
-	}
-	return false
+	c.con = con
+	return true
 }
 
 // Close connection to receiver
@@ -80,33 +77,45 @@ func (c *Connection) SendCmd(command string) error {
 }
 
 // Receives output from receiver
-func (c *Connection) RecvCmd() (string, error) {
-	// Read repsonse and store it in a 2048 byte buffer
-	buffer := make([]byte, 2048)
-	_, err := c.con.Read(buffer)
 
+// Credit to reddec on github, used some of his code to figure this out
+// https://github.com/reddec/go-eiscp/blob/master/iscp.go
+func (c *Connection) RecvCmd() (string, error) {
+	reader := bufio.NewReader(c.con)
+
+	// Get the first four bytes header, and verify it says EISCP
+	chunk := make([]byte, 4)
+	_, err := reader.Read(chunk)
 	if err != nil {
 		return "", err
 	}
-
-	// Verify that the command is valid
-	if string(buffer[:4]) != "ISCP" {
-		c.Disconnect() // Close session
+	if string(chunk) != "ISCP" {
 		return "", errors.New("invalid response from receiver")
 	}
 
-	// Split the header and response, giving only the response
-	responseSplit := bytes.Split(buffer, []byte{0, 0, 0})[3]
-
-	// Remove the last 3 bytes of the response
-	response := string(responseSplit[:len(responseSplit)-3])
-
-	// Responses ending with N/A are invalid
-	if strings.HasSuffix(response, "N/A") {
-		return response, errors.New("invalid response from receiver")
+	// Get header size
+	reader.Read(chunk)
+	if binary.BigEndian.Uint32(chunk) != 16 {
+		return "", errors.New("invalid header size")
 	}
 
-	log.Println("RECV:", response)
+	// Get data size
+	reader.Read(chunk)
+	dataSize := binary.BigEndian.Uint32(chunk)
 
+	// Skip ISCP version and reserved bytes (iscp version is always 1)
+	reserved := make([]byte, 4)
+	reader.Read(reserved)
+
+	// Get ISCP response
+	iscp := make([]byte, dataSize)
+	reader.Read(iscp)
+
+	// Remove end characters
+	iscp = iscp[:len(iscp)-3]
+
+	response := string(iscp)
+
+	log.Println("RECV:", response)
 	return response, nil
 }
