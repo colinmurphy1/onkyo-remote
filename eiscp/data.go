@@ -9,6 +9,7 @@ type Connection struct {
 	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
 	iscpDest    byte        // ISCP destination (default 0x31)
 	Status      OnkyoStatus // Store status of receiver
+	AlbumArt    AlbumArt    // Album art
 }
 
 // Struct that stores the general status of the receiver
@@ -121,5 +122,7 @@ var NetServices = map[string]string{
 	"F4": "Bluetooth",
 }
 
-// Store album art
-var AlbumArt []byte
+type AlbumArt struct {
+	Data        []byte
+	ContentType string
+}

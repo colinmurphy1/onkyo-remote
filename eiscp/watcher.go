@@ -94,16 +94,18 @@ func (c *Connection) EiscpWatcher() {
 			// 2-http://url
 			if cmdValue[0:2] == string("2-") {
 				// Save album art in memory
-				art, err := lib.GetArt(cmdValue[2:])
+				art, ctype, err := lib.GetArt(cmdValue[2:])
 				if err != nil {
 					log.Println("Error downloading album art:", err)
 					continue
 				}
-				AlbumArt = art
+				c.AlbumArt.Data = art
+				c.AlbumArt.ContentType = ctype    // Content type (eg image/jpeg)
 				c.Status.SongInfo.AlbumArt = true // status endpoint reports art is available
 			} else if cmdValue == "n-" {
 				// Clear out the stored album art
-				AlbumArt = make([]byte, 0)
+				c.AlbumArt.Data = make([]byte, 0)
+				c.AlbumArt.ContentType = ""
 				c.Status.SongInfo.AlbumArt = false
 			}
 
