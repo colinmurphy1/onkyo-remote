@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
-	"github.com/colinmurphy1/onkyo-remote/help"
+	"github.com/colinmurphy1/onkyo-remote/lib"
 	"github.com/gin-gonic/gin"
 )
 
@@ -12,9 +12,9 @@ func SendRaw(c *gin.Context) {
 
 	err := eiscp.Conn.SendCmd(command)
 	if err != nil {
-		help.Response(c, 500, "Error", err)
+		lib.Response(c, 500, "Error", err)
 		return
 	}
 
-	help.Response(c, 200, "OK", nil)
+	lib.Response(c, 200, "OK", nil)
 }

@@ -4,6 +4,8 @@ import (
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/colinmurphy1/onkyo-remote/lib"
 )
 
 // Watches for responses from the receiver, and configures the status struct accordingly
@@ -85,11 +87,25 @@ func (c *Connection) EiscpWatcher() {
 			// NET Source (see data.go for options)
 			// This does show other information (such as if you like a song),
 			// but this isn't going to be too useful for the controller.
-			if c.Status.Input.HexCode == "2B" {
-				c.Status.Input.NetSource = NetServices[cmdValue[7:9]]
-				continue
+			c.Status.Input.NetSource = NetServices[cmdValue[7:9]]
+
+		// Jacket (Album artwork)
+		case "NJA":
+			// 2-http://url
+			if cmdValue[0:2] == string("2-") {
+				// Save album art in memory
+				art, err := lib.GetArt(cmdValue[2:])
+				if err != nil {
+					log.Println("Error downloading album art:", err)
+					continue
+				}
+				AlbumArt = art
+				c.Status.SongInfo.AlbumArt = true // status endpoint reports art is available
+			} else if cmdValue == "n-" {
+				// Clear out the stored album art
+				AlbumArt = make([]byte, 0)
+				c.Status.SongInfo.AlbumArt = false
 			}
-			c.Status.Input.NetSource = ""
 
 		// Tuner frequency
 		case "PRS":

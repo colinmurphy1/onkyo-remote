@@ -38,11 +38,12 @@ type Volume struct {
 
 // Song information
 type SongInfo struct {
-	Title  string    // Song title
-	Artist string    // Song Artist
-	Album  string    // Song Album
-	Time   SongTime  // Song time/position
-	Track  SongTrack // Track position
+	Title    string    // Song title
+	Artist   string    // Song Artist
+	Album    string    // Song Album
+	AlbumArt bool      // Album art available
+	Time     SongTime  // Song time/position
+	Track    SongTrack // Track position
 }
 
 // Song time position/length
@@ -119,3 +120,6 @@ var NetServices = map[string]string{
 	"F3": "NET",
 	"F4": "Bluetooth",
 }
+
+// Store album art
+var AlbumArt []byte

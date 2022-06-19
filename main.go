@@ -36,6 +36,9 @@ func main() {
 
 		// RAW COMMAND
 		routes.GET("/raw/:command", api.SendRaw)
+
+		// ALBUM ART
+		routes.GET("/art", api.GetArt)
 	}
 
 	// Start http server
