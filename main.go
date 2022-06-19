@@ -33,6 +33,9 @@ func main() {
 		// SOURCE
 		routes.GET("/source", api.GetSource)
 		routes.GET("/source/:sourceID", api.SetSource)
+
+		// RAW COMMAND
+		routes.GET("/raw/:command", api.SendRaw)
 	}
 
 	// Start http server
