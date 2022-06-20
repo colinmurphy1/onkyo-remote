@@ -21,10 +21,12 @@ type OnkyoStatus struct {
 	Tuner    tuner    // Tuner status
 }
 
+// Power status
 type power struct {
-	Status bool // Power status
+	Status bool
 }
 
+// Current input information
 type input struct {
 	Name      string // Input name
 	HexCode   string // Input HEX code (for debugging, and future custom naming)
@@ -114,7 +116,7 @@ var NetServices = map[string]string{
 	"11": "Home Media",
 	"12": "Deezer",
 	"13": "iHeartRadio",
-	"18": "Airplay",
+	"18": "AirPlay",
 	"F0": "Front USB",
 	"F1": "Rear USB",
 	"F2": "Internet Radio",
@@ -123,6 +125,6 @@ var NetServices = map[string]string{
 }
 
 type albumArt struct {
-	Data        []byte
-	ContentType string
+	Data        []byte // Binary image data
+	ContentType string // Content type (eg. image/jpeg)
 }
