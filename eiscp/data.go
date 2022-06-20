@@ -9,58 +9,58 @@ type Connection struct {
 	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
 	iscpDest    byte        // ISCP destination (default 0x31)
 	Status      OnkyoStatus // Store status of receiver
-	AlbumArt    AlbumArt    // Album art
+	AlbumArt    albumArt    // Album art
 }
 
 // Struct that stores the general status of the receiver
 type OnkyoStatus struct {
-	Power    Power    // Power status
-	Input    Input    // Input source
-	Volume   Volume   // Volume status
-	SongInfo SongInfo // Song information
-	Tuner    Tuner    // Tuner status
+	Power    power    // Power status
+	Input    input    // Input source
+	Volume   volume   // Volume status
+	SongInfo songInfo // Song information
+	Tuner    tuner    // Tuner status
 }
 
-type Power struct {
+type power struct {
 	Status bool // Power status
 }
 
-type Input struct {
+type input struct {
 	Name      string // Input name
 	HexCode   string // Input HEX code (for debugging, and future custom naming)
 	NetSource string // NET Source (DLNA, AirPlay, Spotify, etc.) Leave blank if not in NET
 }
 
 // Volume status
-type Volume struct {
+type volume struct {
 	Level int  // Volume level
 	Mute  bool // Mute status
 }
 
 // Song information
-type SongInfo struct {
+type songInfo struct {
 	Title    string    // Song title
 	Artist   string    // Song Artist
 	Album    string    // Song Album
 	AlbumArt bool      // Album art available
-	Time     SongTime  // Song time/position
-	Track    SongTrack // Track position
+	Time     songTime  // Song time/position
+	Track    songTrack // Track position
 }
 
 // Song time position/length
-type SongTime struct {
+type songTime struct {
 	Current string // Position in HH:MM:SS
 	Length  string // Length in HH:MM:SS
 }
 
 // Song track position
-type SongTrack struct {
+type songTrack struct {
 	Current int
 	Total   int
 }
 
 // Tuner status
-type Tuner struct {
+type tuner struct {
 	Frequency float64 // Tuner frequency
 	Preset    int     // Tuner preset
 }
@@ -122,7 +122,7 @@ var NetServices = map[string]string{
 	"F4": "Bluetooth",
 }
 
-type AlbumArt struct {
+type albumArt struct {
 	Data        []byte
 	ContentType string
 }
