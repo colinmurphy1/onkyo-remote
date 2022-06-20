@@ -1,45 +1,69 @@
 package config
 
 import (
+	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
-	"strconv"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
-	RECEIVER_IP   string // IP address or hostname of the receiver
-	HTTP_PORT     string // Port that the API listens on
-	ENABLE_REMOTE bool   // Enable the web-based remote
-	EISCP_LOGGING bool   // Enable logging of eISCP commands
+	Receiver     configReceiver `yaml:"receiver"`   // IP address or hostname of the receiver
+	HTTPPort     string         `yaml:"http_port"`  // Port that the API listens on
+	EnableRemote bool           `yaml:"web_remote"` // Enable the web-based remote
+	EnableRaw    bool           `yaml:"api_raw"`    // Enable the /api/raw/:command endpoint
+	EnableArt    bool           `yaml:"album_art"`  // Enable album art
+	Logging      configLogging  `yaml:"logging"`    // Logging settings
+	Inputs       []configInputs `yaml:"inputs"`     // Custom inputs
+}
+
+type configReceiver struct {
+	Address string `yaml:"address"`
+	Port    int    `yaml:"port"`
+}
+
+type configLogging struct {
+	Eiscp bool `yaml:"eiscp"` // eiscp logging
+	HTTP  bool `yaml:"http"`  // http logging
+}
+
+type configInputs struct {
+	Hex  string `yaml:"hex"`
+	Name string `yaml:"name"`
 }
 
 var Conf *Config
 
-// https://stackoverflow.com/questions/40326540/how-to-assign-default-value-if-env-var-is-empty
-func getEnv(key, fallback string, required bool) string {
-	if value, ok := os.LookupEnv(key); ok {
-		return value
-	}
+// Configure environment variables and set defaults
+func init() {
 
-	if required {
-		fmt.Println("Required variable", key, "is not set. You must set this environment variable for the application to function.")
+	// Command-line arguments
+	configFile := flag.String("config", "", "Path to yaml config file")
+	flag.Parse()
+
+	// Require that -config be passed, and show usage
+	if *configFile == "" {
+		flag.Usage()
 		os.Exit(1)
 	}
 
-	return fallback
-}
-
-// Configure environment variables and set defaults
-func init() {
+	// Initialize Config struct
 	Conf = new(Config)
 
-	// Set values, and assign a default one if it is not passed
-	Conf.RECEIVER_IP = getEnv("RECEIVER_IP", "0.0.0.0", true)
-	Conf.HTTP_PORT = getEnv("HTTP_PORT", "8080", false)
-	Conf.EISCP_LOGGING, _ = strconv.ParseBool(
-		getEnv("ISCP_LOGGING", "true", false),
-	)
-	Conf.ENABLE_REMOTE, _ = strconv.ParseBool(
-		getEnv("ENABLE_REMOTE", "false", false),
-	)
+	// Read yaml file
+	content, err := ioutil.ReadFile(*configFile)
+	if err != nil {
+		fmt.Println("Could not open configuration file:", err)
+		os.Exit(1)
+	}
+
+	// Load yaml config into Config struct
+	err = yaml.Unmarshal(content, &Conf)
+
+	if err != nil {
+		fmt.Println("Could not parse configuration file:", err)
+		os.Exit(1)
+	}
 }

@@ -5,59 +5,65 @@ import "net"
 // Struct that stores the connection to the receiver
 type Connection struct {
 	ip          string      // IP address of the Onkyo receiver
+	port        int         // ISCP port of the receiver (default 60128)
 	con         net.Conn    // Connection is stored here
 	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
 	iscpDest    byte        // ISCP destination (default 0x31)
 	Status      OnkyoStatus // Store status of receiver
+	AlbumArt    albumArt    // Album art
 }
 
 // Struct that stores the general status of the receiver
 type OnkyoStatus struct {
-	Power    Power    // Power status
-	Input    Input    // Input source
-	Volume   Volume   // Volume status
-	SongInfo SongInfo // Song information
-	Tuner    Tuner    // Tuner status
+	Power    power    // Power status
+	Input    input    // Input source
+	Volume   volume   // Volume status
+	SongInfo songInfo // Song information
+	Tuner    tuner    // Tuner status
 }
 
-type Power struct {
-	Status bool // Power status
+// Power status
+type power struct {
+	Status bool
 }
 
-type Input struct {
-	Name    string // Input name
-	HexCode string // Input HEX code (for debugging, and future custom naming)
+// Current input information
+type input struct {
+	Name      string // Input name
+	HexCode   string // Input HEX code (for debugging, and future custom naming)
+	NetSource string // NET Source (DLNA, AirPlay, Spotify, etc.) Leave blank if not in NET
 }
 
 // Volume status
-type Volume struct {
+type volume struct {
 	Level int  // Volume level
 	Mute  bool // Mute status
 }
 
 // Song information
-type SongInfo struct {
-	Title  string    // Song title
-	Artist string    // Song Artist
-	Album  string    // Song Album
-	Time   SongTime  // Song time/position
-	Track  SongTrack // Track position
+type songInfo struct {
+	Title    string    // Song title
+	Artist   string    // Song Artist
+	Album    string    // Song Album
+	AlbumArt bool      // Album art available
+	Time     songTime  // Song time/position
+	Track    songTrack // Track position
 }
 
 // Song time position/length
-type SongTime struct {
+type songTime struct {
 	Current string // Position in HH:MM:SS
 	Length  string // Length in HH:MM:SS
 }
 
 // Song track position
-type SongTrack struct {
+type songTrack struct {
 	Current int
 	Total   int
 }
 
 // Tuner status
-type Tuner struct {
+type tuner struct {
 	Frequency float64 // Tuner frequency
 	Preset    int     // Tuner preset
 }
@@ -89,4 +95,37 @@ var Inputs = map[string]string{
 	"2D": "AIRPLAY",
 	"2E": "BLUETOOTH",
 	"40": "UNIVERSAL PORT",
+}
+
+// NET Services
+var NetServices = map[string]string{
+	"00": "DLNA",
+	"01": "My Favorite",
+	"02": "vTuner",
+	"03": "SiriusXM",
+	"04": "Pandora",
+	"05": "Rhapsody",
+	"06": "Last.fm",
+	"07": "Slacker",
+	"0A": "Spotify",
+	"0B": "AUPEO!",
+	"0C": "radiko",
+	"0D": "e-onkyo",
+	"0E": "TuneIn",
+	"0F": "MP3tunes",
+	"10": "Simfy",
+	"11": "Home Media",
+	"12": "Deezer",
+	"13": "iHeartRadio",
+	"18": "AirPlay",
+	"F0": "Front USB",
+	"F1": "Rear USB",
+	"F2": "Internet Radio",
+	"F3": "NET",
+	"F4": "Bluetooth",
+}
+
+type albumArt struct {
+	Data        []byte // Binary image data
+	ContentType string // Content type (eg. image/jpeg)
 }

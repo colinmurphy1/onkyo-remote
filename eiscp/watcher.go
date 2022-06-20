@@ -4,17 +4,20 @@ import (
 	"log"
 	"strconv"
 	"strings"
+
+	"github.com/colinmurphy1/onkyo-remote/lib"
 )
 
 // Watches for responses from the receiver, and configures the status struct accordingly
-func (c *Connection) EiscpWatcher() error {
+func (c *Connection) EiscpWatcher() {
 	var response, cmd, cmdValue string
 	var err error
 
 	for {
 		response, err = c.RecvCmd() // Receive command from the receiver
 		if err != nil {
-			return err
+			log.Println("RECV ERROR:", err)
+			continue // Recover from any errors
 		}
 
 		cmd = response[2:5]     // iscp command
@@ -55,6 +58,17 @@ func (c *Connection) EiscpWatcher() error {
 			c.Status.Input.HexCode = cmdValue
 			c.Status.Input.Name = Inputs[cmdValue]
 
+			// If input is no longer NET (2B), clear some fields
+			if c.Status.Input.HexCode != "2B" {
+				c.Status.Input.NetSource = ""
+				c.Status.SongInfo.Title = ""
+				c.Status.SongInfo.Album = ""
+				c.Status.SongInfo.Artist = ""
+				c.Status.SongInfo.AlbumArt = false
+				c.AlbumArt.Data = make([]byte, 0)
+				c.AlbumArt.ContentType = ""
+			}
+
 		// Get Song Title (NET/USB ONLY)
 		case "NTI":
 			c.Status.SongInfo.Title = cmdValue
@@ -78,6 +92,33 @@ func (c *Connection) EiscpWatcher() error {
 			ntr := strings.Split(cmdValue, "/")
 			c.Status.SongInfo.Track.Current, _ = strconv.Atoi(ntr[0])
 			c.Status.SongInfo.Track.Total, _ = strconv.Atoi(ntr[1])
+
+		// NET service
+		case "NMS":
+			// NET Source (see data.go for options)
+			// This does show other information (such as if you like a song),
+			// but this isn't going to be too useful for the controller.
+			c.Status.Input.NetSource = NetServices[cmdValue[7:9]]
+
+		// Jacket (Album artwork)
+		case "NJA":
+			// 2-http://url
+			if cmdValue[0:2] == string("2-") {
+				// Save album art in memory
+				art, ctype, err := lib.GetArt(cmdValue[2:])
+				if err != nil {
+					log.Println("Error downloading album art:", err)
+					continue
+				}
+				c.AlbumArt.Data = art
+				c.AlbumArt.ContentType = ctype    // Content type (eg image/jpeg)
+				c.Status.SongInfo.AlbumArt = true // status endpoint reports art is available
+			} else if cmdValue == "n-" {
+				// Clear out the stored album art
+				c.AlbumArt.Data = make([]byte, 0)
+				c.AlbumArt.ContentType = ""
+				c.Status.SongInfo.AlbumArt = false
+			}
 
 		// Tuner frequency
 		case "PRS":

@@ -1,2 +1,5 @@
 # hide compiled onkyo-remote
 onkyo-remote
+
+# ignore my config.yaml file
+config.yaml

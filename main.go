@@ -14,6 +14,11 @@ func main() {
 	// Disconnect from the receiver when the software terminates
 	defer eiscp.Conn.Disconnect()
 
+	// Disable gin logs if disabled
+	if !config.Conf.Logging.HTTP {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	// Set up router
 	router = gin.Default()
 
@@ -33,8 +38,14 @@ func main() {
 		// SOURCE
 		routes.GET("/source", api.GetSource)
 		routes.GET("/source/:sourceID", api.SetSource)
+
+		// RAW COMMAND
+		routes.GET("/raw/:command", api.SendRaw)
+
+		// ALBUM ART
+		routes.GET("/art", api.GetArt)
 	}
 
 	// Start http server
-	router.Run(":" + config.Conf.HTTP_PORT)
+	router.Run(":" + config.Conf.HTTPPort)
 }
