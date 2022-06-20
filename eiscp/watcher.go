@@ -58,6 +58,17 @@ func (c *Connection) EiscpWatcher() {
 			c.Status.Input.HexCode = cmdValue
 			c.Status.Input.Name = Inputs[cmdValue]
 
+			// If input is no longer NET (2B), clear some fields
+			if c.Status.Input.HexCode != "2B" {
+				c.Status.Input.NetSource = ""
+				c.Status.SongInfo.Title = ""
+				c.Status.SongInfo.Album = ""
+				c.Status.SongInfo.Artist = ""
+				c.Status.SongInfo.AlbumArt = false
+				c.AlbumArt.Data = make([]byte, 0)
+				c.AlbumArt.ContentType = ""
+			}
+
 		// Get Song Title (NET/USB ONLY)
 		case "NTI":
 			c.Status.SongInfo.Title = cmdValue
