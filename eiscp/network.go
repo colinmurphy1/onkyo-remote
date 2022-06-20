@@ -6,12 +6,14 @@ import (
 	"errors"
 	"log"
 	"net"
+	"strconv"
 )
 
 // Creates a new Onkyo stereo
-func Onkyo(ip string) *Connection {
+func Onkyo(ip string, port int) *Connection {
 	device := new(Connection)
 	device.ip = ip
+	device.port = port
 	device.iscpVersion = 0x1
 	device.iscpDest = 0x31
 
@@ -24,9 +26,9 @@ func Onkyo(ip string) *Connection {
 // Establish connection to eISCP service. Returns true if connection was successful.
 func (c *Connection) Connect() bool {
 
-	log.Printf("Connecting to device at %s", c.ip)
+	log.Printf("Connecting to device at %s:%d", c.ip, c.port)
 
-	con, err := net.Dial("tcp", c.ip+":60128")
+	con, err := net.Dial("tcp", c.ip+":"+strconv.Itoa(c.port))
 
 	// Check for connection errors
 	if err != nil {

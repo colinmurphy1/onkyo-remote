@@ -1,0 +1,18 @@
+# IP address and port of your receiver
+receiver:
+  address: "192.168.1.180"
+  port: 60128
+
+# Port the web service listens on
+http_port: 8080
+
+# Enable the javascript-based remote app
+web_remote: true
+
+# Enable or disable the /api/raw/:command endpoint
+api_raw: false
+
+# Logging settings
+logging:
+  eiscp: true
+  http: true

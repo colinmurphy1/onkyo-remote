@@ -13,12 +13,12 @@ var Conn *Connection
 func init() {
 
 	// Disable logging if it is not enabled
-	if !config.Conf.EISCP_LOGGING {
+	if !config.Conf.Logging.Eiscp {
 		log.SetOutput(ioutil.Discard)
 	}
 
 	// Connect to the receiver
-	Conn = Onkyo(config.Conf.RECEIVER_IP)
+	Conn = Onkyo(config.Conf.Receiver.Address, config.Conf.Receiver.Port)
 
 	// Start command watcher goroutine
 	go Conn.EiscpWatcher()

@@ -2,25 +2,27 @@
 
 By Colin Murphy, 2022
 
-Onkyo-remote exposes the eISCP protocol Onkyo home audio equipment uses into
-a REST API. It utilizes a self-built library that sends and receives eISCP
-commands from a receiver using documentation from Onkyo. 
+Onkyo-remote exposes the eISCP protocol Onkyo/Integra/newer Pioneer home audio
+equipment uses into a REST API. It utilizes a self-built library that sends and
+receives eISCP commands from a receiver using documentation from Onkyo. 
 
 In the future it will also provide a JavaScript-based web remote that can be
 used to control the receiver instead of interfacing with an API.
 
 ## Usage
 
-Set the receiver's IP address, and optionally the port the web server listens
-on.
+Make a copy of the `config.example.yaml` file and change the IP address to
+the IPv4 address of your Onkyo/Integra receiver. You can also make other
+setting changes, for example to disable the eISCP logging. 
 
-    export RECEIVER_IP="192.168.1.180"
-    export HTTP_PORT="8080"
+Once done, you may start the service like so:
 
-Start the service...
+    go run main.go -config ./config.yaml
 
-    go run main.go
+Optionally, you may also compile the software and run it:
 
+    go build
+    ./onkyo-remote -config ./config.yaml
 
 Open a web browser and navigate to http://localhost:8080/api/status. You should
 get a response returning the general status of the receiver.

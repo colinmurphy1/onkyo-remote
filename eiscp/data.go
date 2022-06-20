@@ -5,6 +5,7 @@ import "net"
 // Struct that stores the connection to the receiver
 type Connection struct {
 	ip          string      // IP address of the Onkyo receiver
+	port        int         // ISCP port of the receiver (default 60128)
 	con         net.Conn    // Connection is stored here
 	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
 	iscpDest    byte        // ISCP destination (default 0x31)

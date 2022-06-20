@@ -14,6 +14,11 @@ func main() {
 	// Disconnect from the receiver when the software terminates
 	defer eiscp.Conn.Disconnect()
 
+	// Disable gin logs if disabled
+	if !config.Conf.Logging.HTTP {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	// Set up router
 	router = gin.Default()
 
@@ -42,5 +47,5 @@ func main() {
 	}
 
 	// Start http server
-	router.Run(":" + config.Conf.HTTP_PORT)
+	router.Run(":" + config.Conf.HTTPPort)
 }
