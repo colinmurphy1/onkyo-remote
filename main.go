@@ -42,6 +42,9 @@ func main() {
 		// RAW COMMAND
 		routes.GET("/raw/:command", api.SendRaw)
 
+		// ON-SCREEN DISPLAY
+		routes.GET("/osd/:key", api.SetOSD)
+
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
 	}
