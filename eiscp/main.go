@@ -28,7 +28,7 @@ func init() {
 
 		// Prevent renaming of specific inputs
 		if lib.StringInSlice(input.Hex, noRename) {
-			log.Println(Inputs[input.Hex], "is an input that cannot be renamed. Skipping.")
+			log.Println(Inputs[input.Hex], "is not an input that can be renamed. Skipping.")
 			continue
 		}
 
