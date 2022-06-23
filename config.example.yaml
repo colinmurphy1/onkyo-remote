@@ -16,3 +16,11 @@ api_raw: false
 logging:
   eiscp: true
   http: true
+
+# Input declarations
+# Only inputs specified here will be renamed from their defaults
+inputs:
+  - hex: 20
+    name: "TV Optical Out"
+  - hex: 02
+    name: "PolyStation 2"
