@@ -25,7 +25,6 @@ func Onkyo(ip string, port int) *Connection {
 
 // Establish connection to eISCP service. Returns true if connection was successful.
 func (c *Connection) Connect() bool {
-
 	log.Printf("Connecting to device at %s:%d", c.ip, c.port)
 
 	con, err := net.Dial("tcp", c.ip+":"+strconv.Itoa(c.port))

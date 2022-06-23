@@ -11,7 +11,6 @@ import (
 var Conn *Connection
 
 func init() {
-
 	// Disable logging if it is not enabled
 	if !config.Conf.Logging.Eiscp {
 		log.SetOutput(ioutil.Discard)

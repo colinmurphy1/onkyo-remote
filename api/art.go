@@ -11,7 +11,6 @@ import (
 var pixel string = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 
 func GetArt(c *gin.Context) {
-
 	// Decode base64 encoded pixel image
 	x, _ := base64.StdEncoding.DecodeString(pixel)
 
