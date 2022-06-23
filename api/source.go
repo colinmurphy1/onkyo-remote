@@ -17,7 +17,7 @@ func SetSource(c *gin.Context) {
 
 	// Verify that the source is valid
 	if _, ok := eiscp.Inputs[source]; !ok {
-		lib.Response(c, 400, "Bad Request", "Invalid input, expected HEX code")
+		lib.Response(c, 400, "Invalid input, expected HEX code", nil)
 		return
 	}
 
@@ -27,7 +27,7 @@ func SetSource(c *gin.Context) {
 		return
 	}
 
-	lib.Response(c, 200, "OK", "Source set to "+eiscp.Inputs[source])
+	lib.Response(c, 200, "Source set to "+eiscp.Inputs[source], nil)
 }
 
 // Return source list

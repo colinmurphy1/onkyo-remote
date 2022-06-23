@@ -20,6 +20,6 @@ func GetArt(c *gin.Context) {
 		return
 	}
 
-	// Return the jpeg stored in memory
+	// Return the art stored in memory
 	c.Data(200, eiscp.Conn.AlbumArt.ContentType, eiscp.Conn.AlbumArt.Data)
 }

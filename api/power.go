@@ -17,7 +17,7 @@ func SetPowerStatus(c *gin.Context) {
 		set = false
 	} else {
 		// Invalid option, send HTTP 400
-		lib.Response(c, 400, "Bad Request", nil)
+		lib.Response(c, 400, "Invalid power option", nil)
 		return
 	}
 
