@@ -58,15 +58,3 @@ func (c *Connection) SetMute(mute bool) (bool, error) {
 	// Return mute status
 	return c.Status.Volume.Mute, nil
 }
-
-/*
-func (c *Connection) SetSource(source string) (string, error) {
-	err := c.SendCmd("SLI" + source)
-	if err != nil {
-		return "", err
-	}
-
-	// Sleep for 200ms to allow command to process
-	time.Sleep(200 * time.Millisecond)
-}
-*/

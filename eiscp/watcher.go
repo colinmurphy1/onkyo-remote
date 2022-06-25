@@ -17,7 +17,7 @@ func (c *Connection) EiscpWatcher() {
 		response, err = c.RecvCmd() // Receive command from the receiver
 		if err != nil {
 			log.Println("RECV ERROR:", err)
-			continue // Recover from any errors
+			break // Receive errors are generally not recoverable
 		}
 
 		cmd = response[2:5]     // iscp command

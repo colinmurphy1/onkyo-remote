@@ -38,7 +38,6 @@ var Conf *Config
 
 // Configure environment variables and set defaults
 func init() {
-
 	// Command-line arguments
 	configFile := flag.String("config", "", "Path to yaml config file")
 	flag.Parse()

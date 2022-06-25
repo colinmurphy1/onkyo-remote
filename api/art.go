@@ -11,7 +11,6 @@ import (
 var pixel string = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 
 func GetArt(c *gin.Context) {
-
 	// Decode base64 encoded pixel image
 	x, _ := base64.StdEncoding.DecodeString(pixel)
 
@@ -20,6 +19,6 @@ func GetArt(c *gin.Context) {
 		return
 	}
 
-	// Return the jpeg stored in memory
+	// Return the art stored in memory
 	c.Data(200, eiscp.Conn.AlbumArt.ContentType, eiscp.Conn.AlbumArt.Data)
 }

@@ -23,7 +23,6 @@ func (cmd *OnkyoCommand) IscpCommand() []byte {
 
 // Generate an eISCP packet
 func (cmd *OnkyoCommand) EiscpCommand() []byte {
-
 	// Iscp command
 	command := cmd.IscpCommand()
 

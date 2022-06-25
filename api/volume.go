@@ -15,7 +15,7 @@ func SetVolume(c *gin.Context) {
 	volumeLevel, err := strconv.ParseUint(volume, 10, 32)
 	if err != nil {
 		// Errors are likely bad data passed, such as a negative volume level.
-		lib.Response(c, 400, "Bad Request", nil)
+		lib.Response(c, 400, "Invalid volume level", nil)
 		return
 	}
 
@@ -38,7 +38,7 @@ func SetMute(c *gin.Context) {
 		set = false
 	} else {
 		// Invalid option, send HTTP 400
-		lib.Response(c, 400, "Bad Request", nil)
+		lib.Response(c, 400, "Invalid mute option", nil)
 		return
 	}
 
