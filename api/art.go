@@ -19,6 +19,9 @@ func GetArt(c *gin.Context) {
 		return
 	}
 
+	// Prevent caching of the image
+	c.Header("Cache-Control", "no-cache")
+
 	// Return the art stored in memory
 	c.Data(200, eiscp.Conn.AlbumArt.ContentType, eiscp.Conn.AlbumArt.Data)
 }
