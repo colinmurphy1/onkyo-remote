@@ -1,8 +1,12 @@
 # hide compiled onkyo-remote
-onkyo-remote
-*.exe
+onkyo-remote*
 *.so
 *.dll
 
 # ignore my config.yaml file
 config.yaml
+config-DTM-40.7.yaml
+config-TX-NR555.yaml
+
+# ignore compiled svelte website
+static/*
