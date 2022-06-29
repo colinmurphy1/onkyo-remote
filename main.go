@@ -30,6 +30,8 @@ func main() {
 	// Set up router
 	router = gin.Default()
 
+	router.Use(CORSMiddleware())
+
 	// Create a router group
 	routes = router.Group("/api")
 	{
