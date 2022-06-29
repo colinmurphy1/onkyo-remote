@@ -27,8 +27,9 @@ Make a copy of the `config.example.yaml` file and change the IP address to
 the IPv4 address of your Onkyo/Integra receiver. You can also make other
 setting changes, for example to disable the eISCP logging and web interface. 
 
-Once done, compile the software:
+Install dependencies and compile onkyo-remote:
 
+    make deps
     make build
 
 This will compile the Svelte.js frontend and then build three executables. When
