@@ -18,6 +18,7 @@ clean:
 	rm ${BINARY_NAME}-linux
 	rm ${BINARY_NAME}-windows.exe
 	rm -r static/*
+	touch static/index.html
 	rm -rf frontend/public/build
 	rm -rf frontend/node_modules
 
