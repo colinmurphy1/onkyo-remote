@@ -3,7 +3,8 @@
 </script>
 
 <div>
-    <h2>{status.Input.Name}</h2>
+
+    <h2 class="center text-2xl my-4">{status.Input.Name}</h2>
 
     <!--
         TODO: Add source information to be displayed here.

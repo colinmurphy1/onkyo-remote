@@ -1,7 +1,9 @@
 <script>
+    import Icon from 'svelte-awesome'
+    import powerOff from 'svelte-awesome/icons/powerOff';
+    
     export let pwrStatus;
-
-
+    
     const handlePower = async () => {
         let set = "on"
         // If receiver is on, power it off
@@ -22,25 +24,6 @@
 
 
 
-<button on:click={handlePower}>
-    Power<br>
-    {#if pwrStatus}
-    <span class="pwrOn">
-        ON
-    </span>
-    {:else}
-    <span class="pwrOff">
-        OFF
-    </span>
-    {/if}
+<button on:click={handlePower} class="block py-2 px-4 hover:text-black {pwrStatus ? 'hover:bg-green-200' : 'hover:bg-red-200'}">
+    <Icon data={powerOff} scale="1.5" class="align-middle {pwrStatus ? 'text-green-600' : 'text-red-600'}"/>
 </button>
-
-
-<style>
-    .pwrOn {
-        color: green;
-    }
-    .pwrOff {
-        color: red;
-    }
-</style>

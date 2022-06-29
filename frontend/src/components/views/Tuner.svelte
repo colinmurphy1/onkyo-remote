@@ -26,6 +26,9 @@
 </script>
 
 <div>
+
+    <h2 class="text-2xl my-4">{status.Input.Name} Radio</h2>
+
     <div>
         FREQ: {frequency} {band}
     </div>

@@ -1,6 +1,4 @@
 <script>
-    import { onMount } from "svelte";
-
     // Current position in HH:MM:SS
     export let current
 
@@ -32,9 +30,16 @@
     }
 </script>
 
-<div>
-    {current}
-    <progress max="100" value={percentageCompleted}>
-    </progress>
-    {length}
+<div class="flex flex-row">
+    <div class="pl-0 pr-2 text-lg">
+        {current}
+    </div>
+
+    <div class="w-full bg-gray-200 rounded-full h-auto dark:bg-gray-700">
+        <div class="bg-blue-600 h-full rounded-full" style="width: {percentageCompleted}%"></div>
+    </div>
+
+    <div class="pr-0 pl-2 text-lg">
+        {length}
+    </div>
 </div>
