@@ -1,6 +1,10 @@
 package main
 
 import (
+	"embed"
+	"io/fs"
+	"net/http"
+
 	"github.com/colinmurphy1/onkyo-remote/api"
 	"github.com/colinmurphy1/onkyo-remote/config"
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
@@ -9,6 +13,10 @@ import (
 
 var router *gin.Engine
 var routes *gin.RouterGroup
+
+// Static files
+//go:embed static
+var s embed.FS
 
 func main() {
 	// Disconnect from the receiver when the software terminates
@@ -21,6 +29,8 @@ func main() {
 
 	// Set up router
 	router = gin.Default()
+
+	router.Use(CORSMiddleware())
 
 	// Create a router group
 	routes = router.Group("/api")
@@ -50,6 +60,18 @@ func main() {
 
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
+	}
+
+	// Web remote control
+	if config.Conf.EnableRemote {
+		// Serve static/ as /remote/
+		static, _ := fs.Sub(s, "static")
+		router.StaticFS("/remote/", http.FS(static))
+
+		// Redirect / to /remote/
+		router.GET("/", func(c *gin.Context) {
+			c.Redirect(http.StatusTemporaryRedirect, "/remote")
+		})
 	}
 
 	// Start http server

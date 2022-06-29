@@ -48,6 +48,7 @@ type songInfo struct {
 	AlbumArt bool      // Album art available
 	Time     songTime  // Song time/position
 	Track    songTrack // Track position
+	Status   string    // Play pause etc.
 }
 
 // Song time position/length

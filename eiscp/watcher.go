@@ -64,6 +64,7 @@ func (c *Connection) EiscpWatcher() {
 				c.Status.SongInfo.Title = ""
 				c.Status.SongInfo.Album = ""
 				c.Status.SongInfo.Artist = ""
+				c.Status.SongInfo.Status = ""
 				c.Status.SongInfo.AlbumArt = false
 				c.AlbumArt.Data = make([]byte, 0)
 				c.AlbumArt.ContentType = ""
@@ -119,6 +120,25 @@ func (c *Connection) EiscpWatcher() {
 				c.AlbumArt.ContentType = ""
 				c.Status.SongInfo.AlbumArt = false
 			}
+
+		// NET Play status
+		case "NST":
+			var s string
+			playstatus := string(cmdValue[0])
+			switch playstatus {
+			case "p":
+				s = "Paused"
+			case "S":
+				s = "Stop"
+			case "P":
+				s = "Play"
+			case "F":
+				s = "FastForward"
+			case "R":
+				s = "FastReverse"
+			}
+
+			c.Status.SongInfo.Status = s
 
 		// Tuner frequency
 		case "PRS":

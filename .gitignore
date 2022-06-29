@@ -1,8 +1,10 @@
 # hide compiled onkyo-remote
-onkyo-remote
-*.exe
-*.so
-*.dll
+onkyo-remote*
 
 # ignore my config.yaml file
 config.yaml
+config-DTM-40.7.yaml
+config-TX-NR555.yaml
+
+# ignore vscode logs
+.vscode/*.log
