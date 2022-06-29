@@ -9,7 +9,7 @@ build:
 	GOARCH=amd64 GOOS=windows go build -o ${BINARY_NAME}-windows.exe *.go
 
 deps:
-	go get
+	go mod tidy
 	cd frontend; npm install
 
 clean:
