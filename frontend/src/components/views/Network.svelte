@@ -4,6 +4,7 @@
 
     // Import components
     import ProgressBar from '../ProgressBar.svelte'
+    import NetControl from '../buttons/NetControl.svelte';
 
     // Shorthand variables
     let STitle, SArtist, SAlbum, artURL, TCurrent, TTotal
@@ -21,26 +22,11 @@
     $: STitle, SArtist, SAlbum && setTimeout(() => updateArt(), 1000)
 </script>
 
-
-<!-- NET Source and TRACK Position -->
-<div class="flex flex-row p-2">
-    <div class="pl-0 px-2 text-lg">
-        <strong class="font-semibold">{status.Input.NetSource}</strong>
-    </div>
-    <div class="px-2 align-middle h-auto">
-        <div class="text-gray-800">{TCurrent} / {TTotal}</div>
-    </div>
-</div>
-<!-- NET Source and TRACK Position End -->
-
-
 <div class="grid md:grid-cols-2 sm:grid-cols-1">
     <div class="col-span-1 p-2">
         <!-- Album art -->
         {#if status.SongInfo.AlbumArt}
-        <img src={artURL} alt="ALBUM ARTWORK" class="mx-auto">
-        {:else}
-        No Album art available
+            <img src={artURL} alt="ALBUM ARTWORK" class="mx-auto">
         {/if}
         <!-- Album art end -->
     </div>
@@ -62,7 +48,20 @@
         <!-- Progress bar end -->
 
         <!-- Playback controls start -->
-
+        <div class="text-center my-4">
+            <NetControl action="trdn" />
+            <!-- Hide paused if paused, play if playing etc. -->
+            {#if status.SongInfo.Status == "Play"}
+                <NetControl action="pause" />
+            {:else}
+                <NetControl action="play" />
+            {/if}
+            <NetControl action="trup" />
+        </div>
         <!-- Playback controls end -->
+
+        <!-- Track position -->
+        <div class="text-gray-800 text-center pb-2">Track {TCurrent} of {TTotal}</div>
+        <!-- Track position end -->
     </div>
 </div>

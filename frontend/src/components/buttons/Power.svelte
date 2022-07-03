@@ -11,7 +11,7 @@
 
         try {
             // Make an http request
-            await fetch("http://localhost:8080/api/power/" + set, {
+            await fetch("/api/power/" + set, {
                 method: "GET",
             })
         }
@@ -22,8 +22,7 @@
 
 </script>
 
-
-
-<button on:click={handlePower} class="block py-2 px-4 hover:text-black {pwrStatus ? 'hover:bg-green-200' : 'hover:bg-red-200'}">
-    <Icon data={powerOff} scale="1.5" class="align-middle {pwrStatus ? 'text-green-600' : 'text-red-600'}"/>
+<button on:click={handlePower} class="inline-block py-1 px-2 {pwrStatus ? 'hover:bg-green-200' : 'hover:bg-red-200'}" title="Click to power {pwrStatus ? 'off' : 'on'} receiver">
+    <Icon data={powerOff} scale="1" class="align-middle {pwrStatus ? 'text-green-600' : 'text-red-600'}"/>
+    Power
 </button>

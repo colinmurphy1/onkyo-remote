@@ -1,11 +1,9 @@
 <script>
     import Icon from 'svelte-awesome'
-    import music from 'svelte-awesome/icons/music';
-
-    export let input
+    import music from 'svelte-awesome/icons/music'
 </script>
 
-<button class="block py-2 px-4 hover:bg-gray-600">
-    <Icon data={music} scale="1.5" class="align-sub"/>
-    {input.Name}
+<button class="inline-block py-1 px-2 hover:bg-slate-400">
+    <Icon data={music} class="align-sub"/>
+    Input
 </button>

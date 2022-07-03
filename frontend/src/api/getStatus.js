@@ -8,7 +8,8 @@ const getStatus = async () => {
     .then(data => data)
 
     // Verify response is 200 OK
-    /*if (req.status != 200) {
+    /*
+    if (req.status != 200) {
         throw "BadResponseError"
     }*/
 

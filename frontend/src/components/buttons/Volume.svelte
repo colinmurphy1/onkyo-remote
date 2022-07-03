@@ -4,7 +4,7 @@
     export let volume
 </script>
 
-<button class="block py-2 px-4 hover:bg-gray-600">
-    <Icon data={volumeUp} scale="1.5" class="align-sub"/>
+<button class="inline-block py-1 px-2 hover:bg-slate-400">
+    <Icon data={volumeUp} class="align-sub"/>
     {volume.Level}
 </button>
