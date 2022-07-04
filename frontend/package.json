@@ -19,10 +19,11 @@
   },
   "dependencies": {
     "autoprefixer": "^9.8.8",
+    "feather-icons": "^4.29.0",
     "postcss": "^8.4.14",
     "rollup-plugin-dev": "^2.0.4",
     "sirv-cli": "^2.0.0",
-    "svelte-awesome": "^3.0.0",
+    "svelte-feather-icons": "^4.0.0",
     "svelte-preprocess": "^4.10.7",
     "tailwindcss": "^3.1.4"
   }

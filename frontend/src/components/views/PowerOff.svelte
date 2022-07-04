@@ -1,12 +1,10 @@
 <script>
-    import Icon from 'svelte-awesome'
-    import powerOff from 'svelte-awesome/icons/powerOff';
-
+    import { PowerIcon } from 'svelte-feather-icons'
 </script>
 
-<div class="text-center text-gray-700 text-lg my-8">
+<div class="text-center text-gray-800 text-lg my-8">
     <div class="pb-2">
-        <Icon data={powerOff} scale="2" />
+        <PowerIcon class="inline-block h-full align-bottom" />
     </div>
     <p>Receiver is powered off</p>
 </div>

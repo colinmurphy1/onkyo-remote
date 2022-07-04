@@ -1,32 +1,49 @@
 <script>
 	import PowerButton from './buttons/Power.svelte'
-    import InputButton from './buttons/Input.svelte'
+    import SourceButton from './buttons/Source.svelte'
     import VolumeButton from './buttons/Volume.svelte'
-    //import MuteButton from './buttons/Mute.svelte'
+    import SourceSelect from './views/SourceSelect.svelte'
+    import VolumeSelect from './views/VolumeSelect.svelte'
+
+	let showSourceList = false
+    let showVolume = false
+
+	// Event handler for showing source
+	const handleSourceList = (event) => {
+        showVolume = false
+        showSourceList = event.detail
+	}
+
+    // Event handler for volume slider
+	const handleVolume = (event) => {
+        showSourceList = false
+        showVolume = event.detail
+	}
 
     export let status
 </script>
 
-<header class="mb-4 px-0.5 bg-gray-200 border-b border-gray-100 border-b-gray-300">
+<header class="px-0.5 bg-gray-200 border-b border-b-gray-300">
     <div class="max-w-4xl mx-auto relative">
-        <div class="absolute left-0 flex flex-row pl-1">
-            <InputButton />
-            <VolumeButton volume={status.Volume} />
-            <!--<MuteButton muteStatus={status.Volume.Mute} />-->
-        </div>
+        {#if status.Power.Status}
+            <div class="absolute left-0 flex flex-row h-full">
+                <SourceButton on:sourcelist={handleSourceList}/>
+                <VolumeButton volume={status.Volume} on:showvolume={handleVolume} />
+                <!--<MuteButton muteStatus={status.Volume.Mute} />-->
+            </div>
+        {/if}
     
         <!-- Power button -->
-        <div class="absolute right-0 pr-1">
+        <div class="absolute right-0 flex flex-row h-full">
             <PowerButton pwrStatus={status.Power.Status} />
         </div>
         <!-- Power button end -->
-        <div class="text-center font-semibold py-1">
+        <div class="text-center font-semibold py-1 md:text-lg">
             {#if status.Power.Status == false}
                 &nbsp;
             {:else}
-    
-                <!-- If the source is NET, display the NET source -->
-                {#if status.Input.HexCode == "2B"}
+                <!-- If the source is NET, display the NET source (if it is provided) -->
+                {#if status.Input.HexCode == "2B" && status.Input.NetSource != "" }
                     {status.Input.NetSource}
                 {:else}
                     {status.Input.Name}
@@ -35,3 +52,12 @@
         </div>    
     </div>
 </header>
+
+<div class="mt-1 mb-4 max-w-4xl mx-auto">
+    {#if showSourceList }
+        <SourceSelect on:sourcelist={handleSourceList} />
+    {/if}
+    {#if showVolume }
+        <VolumeSelect volume={status.Volume} on:showvolume={handleVolume} />
+    {/if}
+</div>

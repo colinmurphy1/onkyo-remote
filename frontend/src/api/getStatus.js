@@ -4,14 +4,13 @@ const getStatus = async () => {
     const req = await fetch("/api/status", {
         method: "GET",
     })
-    .then(response => response.json())
+    .then(response => {
+        if (! response.ok) {
+            throw new Exception("Response was not OK")
+        }
+        return response.json()
+    })
     .then(data => data)
-
-    // Verify response is 200 OK
-    /*
-    if (req.status != 200) {
-        throw "BadResponseError"
-    }*/
 
     return req.data
 }

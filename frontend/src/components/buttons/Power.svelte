@@ -1,6 +1,5 @@
 <script>
-    import Icon from 'svelte-awesome'
-    import powerOff from 'svelte-awesome/icons/powerOff';
+    import { PowerIcon } from 'svelte-feather-icons'
     
     export let pwrStatus;
     
@@ -22,7 +21,6 @@
 
 </script>
 
-<button on:click={handlePower} class="inline-block py-1 px-2 {pwrStatus ? 'hover:bg-green-200' : 'hover:bg-red-200'}" title="Click to power {pwrStatus ? 'off' : 'on'} receiver">
-    <Icon data={powerOff} scale="1" class="align-middle {pwrStatus ? 'text-green-600' : 'text-red-600'}"/>
-    Power
+<button on:click={handlePower} class="py-1 px-2 {pwrStatus ? 'hover:bg-green-200' : 'hover:bg-red-200'}" title="Power {pwrStatus ? 'off' : 'on'} receiver">
+    <PowerIcon class="inline-block h-full align-bottom {pwrStatus ? 'text-green-600' : 'text-red-600'}" />
 </button>

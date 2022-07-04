@@ -1,6 +1,4 @@
 <script>
-    import Header from '../Header.svelte'
-
     // Get status from receiver
     export let status;
 
@@ -28,7 +26,6 @@
 </script>
 
 <div>
-    <Header text="{status.Input.Name} Radio" />
     <div class="text-center">
         <div class="text-4xl font-semibold my-4">
             {frequency}

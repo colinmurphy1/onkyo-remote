@@ -31,15 +31,15 @@
 </script>
 
 <div class="flex flex-row">
-    <div class="pl-0 pr-2 text-lg">
+    <div class="pl-0 pr-2 text-gray-800">
         {current}
     </div>
 
-    <div class="w-full bg-gray-200 rounded-full h-auto dark:bg-gray-700">
-        <div class="bg-blue-600 h-full rounded-full" style="width: {percentageCompleted}%"></div>
+    <div class="w-full bg-gray-200 h-auto">
+        <div class="bg-blue-500 h-full" style="width: {percentageCompleted}%"></div>
     </div>
 
-    <div class="pr-0 pl-2 text-lg">
+    <div class="pr-0 pl-2 text-gray-800">
         {length}
     </div>
 </div>

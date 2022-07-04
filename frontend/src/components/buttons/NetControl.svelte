@@ -1,11 +1,5 @@
 <script>
-    import Icon from 'svelte-awesome'
-    import play from 'svelte-awesome/icons/play';
-    import pause from 'svelte-awesome/icons/pause';
-    import stop from 'svelte-awesome/icons/stop';
-    import backward from 'svelte-awesome/icons/backward';
-    import forward from 'svelte-awesome/icons/forward';
-
+    import { PlayIcon, PauseIcon, StopCircleIcon, SkipForwardIcon, SkipBackIcon } from 'svelte-feather-icons'
     export let action
 
     const buttonAction = async () => {
@@ -22,17 +16,17 @@
 </script>
 
 
-<button class="rounded p-2 bg-blue-400 hover:bg-blue-500 text-white font-semibold" on:click={buttonAction}>
+<button class="p-2 bg-gray-200 text-blue-400 hover:bg-blue-500 hover:text-white font-semibold align-sub" on:click={buttonAction}>
     {#if action == "play"}
-        <Icon data={play} scale="1.5" class="align-middle m-1" />
+        <PlayIcon class="inline-block h-full align-bottom" size="2x" />
     {:else if action == "pause"}
-        <Icon data={pause} scale="1.5" class="align-middle m-1" />
+        <PauseIcon class="inline-block h-full align-bottom" size="2x" />
     {:else if action == "stop"}
-        <Icon data={stop} scale="1.5" class="align-middle m-1" />
+        <StopCircleIcon class="inline-block h-full align-bottom" size="2x" />
     {:else if action == "trdn"}
-        <Icon data={backward} scale="1.5" class="align-middle m-1" />
+        <SkipBackIcon class="inline-block h-full align-bottom" size="2x" />
     {:else if action == "trup"}
-        <Icon data={forward} scale="1.5" class="align-middle m-1" />
+        <SkipForwardIcon class="inline-block h-full align-bottom" size="2x" />
     {:else}
         Unknown
     {/if}
