@@ -38,6 +38,9 @@ func init() {
 	// Connect to the receiver
 	Conn = Onkyo(config.Conf.Receiver.Address, config.Conf.Receiver.Port)
 
+	// Set maximum volume in the Onkyo Status struct
+	Conn.Status.Volume.Max = config.Conf.MaxVolume
+
 	// Start command watcher goroutine
 	go Conn.EiscpWatcher()
 

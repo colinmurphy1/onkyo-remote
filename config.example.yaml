@@ -12,6 +12,9 @@ web_remote: true
 # Enable or disable the /api/raw/:command endpoint
 api_raw: false
 
+# Max volume you can set using onkyo-remote
+max_volume: 40
+
 # Logging settings
 logging:
   eiscp: true

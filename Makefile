@@ -14,9 +14,9 @@ deps:
 
 clean:
 	go clean
-	rm ${BINARY_NAME}-darwin
-	rm ${BINARY_NAME}-linux
-	rm ${BINARY_NAME}-windows.exe
+	rm -f ${BINARY_NAME}-darwin
+	rm -f ${BINARY_NAME}-linux
+	rm -f ${BINARY_NAME}-windows.exe
 	rm -r static/*
 	touch static/index.html
 	rm -rf frontend/public/build

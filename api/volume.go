@@ -19,7 +19,12 @@ func SetVolume(c *gin.Context) {
 		return
 	}
 
-	setVolume, _ := eiscp.Conn.SetVolume(uint(volumeLevel))
+	setVolume, err := eiscp.Conn.SetVolume(uint(volumeLevel))
+	// Catch volume errors (likely volume exceeds max allowed in settings)
+	if err != nil {
+		lib.Response(c, 400, "Could not set volume", nil)
+		return
+	}
 
 	res := make(map[string]int)
 	res["level"] = int(setVolume)

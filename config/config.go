@@ -14,7 +14,7 @@ type Config struct {
 	HTTPPort     string         `yaml:"http_port"`  // Port that the API listens on
 	EnableRemote bool           `yaml:"web_remote"` // Enable the web-based remote
 	EnableRaw    bool           `yaml:"api_raw"`    // Enable the /api/raw/:command endpoint
-	EnableArt    bool           `yaml:"album_art"`  // Enable album art
+	MaxVolume    uint           `yaml:"max_volume"` // Maximum volume level
 	Logging      configLogging  `yaml:"logging"`    // Logging settings
 	Inputs       []configInputs `yaml:"inputs"`     // Custom inputs
 }
