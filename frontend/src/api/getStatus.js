@@ -6,7 +6,7 @@ const getStatus = async () => {
     })
     .then(response => {
         if (! response.ok) {
-            throw new Exception("Response was not OK")
+            throw new Error("BadResponseError")
         }
         return response.json()
     })
