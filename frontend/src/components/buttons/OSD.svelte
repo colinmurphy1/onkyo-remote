@@ -1,9 +1,3 @@
-<script>
-    import Icon from 'svelte-awesome'
-    import tv from 'svelte-awesome/icons/tv';
-</script>
-
-<button class="block py-2 px-4 hover:bg-gray-600">
-    <Icon data={tv} scale="1.5" class="align-sub"/>
+<button class="py-1 px-2 bg-gray-200 text-black hover:bg-blue-500 hover:text-white flex flex-row">
     OSD
 </button>

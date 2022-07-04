@@ -26,13 +26,17 @@
 </script>
 
 <div>
-
-    <h2 class="text-2xl my-4">{status.Input.Name} Radio</h2>
-
-    <div>
-        FREQ: {frequency} {band}
-    </div>
-    <div>
-        PRS: {status.Tuner.Preset}
+    <div class="text-center">
+        <div class="text-4xl font-semibold my-4">
+            {frequency}
+            <span class="text-gray-700 text-2xl">{band}</span>
+        </div>
+        <div class="text-gray-700 font-semibold">
+            {#if status.Tuner.Preset != 0}
+                Preset {status.Tuner.Preset}
+            {:else}
+                No preset
+            {/if}
+        </div>
     </div>
 </div>

@@ -1,9 +1,12 @@
 package eiscp
 
 import (
+	"errors"
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/colinmurphy1/onkyo-remote/config"
 )
 
 // Turns receiver on or off
@@ -24,6 +27,11 @@ func (c *Connection) SetPower(status bool) error {
 
 // Sets volume level
 func (c *Connection) SetVolume(vol uint) (int, error) {
+	// Ensure volume is less than the limit
+	if vol > config.Conf.MaxVolume {
+		return 0, errors.New("volume exceeds maximum")
+	}
+
 	// convert volume to hexadecimal
 	volHex := string(fmt.Sprintf("%02x", vol))
 	volHex = strings.ToUpper(volHex) // must be uppercase per onkyo spec

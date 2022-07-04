@@ -6,32 +6,32 @@
 
 	// Load components
 	import Page from './components/Page.svelte'
-	import ButtonRow from './components/ButtonRow.svelte'
-	import PowerButton from './components/buttons/Power.svelte'
-	import InputButton from './components/buttons/Input.svelte'
-	import VolumeButton from './components/buttons/Volume.svelte'
-	import OSDButton from './components/buttons/OSD.svelte'
+	import Header from './components/Header.svelte'
+	import PowerOff from './components/views/PowerOff.svelte'
 	import SrcNetwork from './components/views/Network.svelte'
 	import SrcTuner from './components/views/Tuner.svelte'
 	import StdSource from './components/views/StdSource.svelte'
-
+	import ConnectionError from './components/views/ConnectionError.svelte'
 	
 	let loaded = false
+	let loadError = ""
 	let recvStatus
 
 	const updateStatus = async () => {
 		try {
 			recvStatus = await getStatus()
+			loadError = ""
+			loaded = true
 		}
 		catch (err) {
-			console.log('Could not get status:', err)
+			loaded = false
+			loadError = err
 		}
 	}
 
 	// On page load, get receiver status  
 	onMount(async () => {
 		await updateStatus()
-		loaded = true
 	})
 
 	// Update status every second
@@ -39,21 +39,8 @@
 </script>
 
 {#if loaded}
+	<Header status={recvStatus} />
 	<Page>
-		<ButtonRow>
-			<!-- OSD Control -->
-			<OSDButton />
-
-			<!-- Volume Control -->
-			<VolumeButton volume={recvStatus.Volume} />
-
-			<!-- Source Control -->
-			<InputButton input={recvStatus.Input} />
-
-			<!-- Power button -->
-			<PowerButton pwrStatus={recvStatus.Power.Status} />
-		</ButtonRow>
-
 		{#if recvStatus.Power.Status}
 			{#if recvStatus.Input.HexCode == "2B"}
 				<!-- NET Source -->
@@ -66,16 +53,20 @@
 				<StdSource status={recvStatus} />
 			{/if}
 		{:else}
-			<div>
-				Receiver is powered off
-			</div>	
+			<PowerOff />
 		{/if}
 	</Page>
 {:else}
-	<main>
-		Loading
-	</main>
+	<Page>
+		{#if loadError != ""}
+			<ConnectionError error={loadError} />
+		{:else}
+			Loading...
+		{/if}
+	</Page>
 {/if}
+
+
 
 <style lang="postcss" global>
 @tailwind base;

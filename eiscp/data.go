@@ -38,6 +38,7 @@ type input struct {
 type volume struct {
 	Level int  // Volume level
 	Mute  bool // Mute status
+	Max   uint // Maximum volume
 }
 
 // Song information
