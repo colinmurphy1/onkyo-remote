@@ -7,11 +7,6 @@
 
     // Calculate length based on HH:MM:SS
     const lengthInSeconds = (input) => {
-        // If there's no length specified, return 0 seconds
-        if (input == '--:--:--') {
-            return 0
-        }
-
         // Split the hours, minutes, and seconds into individual variables
         let [hour, minute, second] = input.split(':')
 
@@ -26,6 +21,9 @@
     // Calculate rounded percentage of song completion
     let percentageCompleted
     $: {
+        // If the current time is "--:--:--", make it be "00:00:00"
+        if (current == '--:--:--') current = '00:00:00'
+
         percentageCompleted = Math.round(lengthInSeconds(current) / lengthInSeconds(length) * 100)
     }
 </script>

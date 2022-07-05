@@ -29,7 +29,6 @@
             <img src={artURL} alt="" class="mx-auto">
         {:else}
             <div class="w-40 h-40 bg-gray-100 mx-auto">
-                &nbsp;
             </div>
         {/if}
         <!-- Album art end -->
