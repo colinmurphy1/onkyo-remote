@@ -29,7 +29,6 @@
             <div class="absolute left-0 flex flex-row h-full">
                 <SourceButton on:sourcelist={handleSourceList}/>
                 <VolumeButton volume={status.Volume} on:showvolume={handleVolume} />
-                <!--<MuteButton muteStatus={status.Volume.Mute} />-->
             </div>
         {/if}
     
@@ -38,7 +37,7 @@
             <PowerButton pwrStatus={status.Power.Status} />
         </div>
         <!-- Power button end -->
-        <div class="text-center font-semibold py-1 md:text-lg">
+        <div class="text-center font-semibold py-1">
             {#if status.Power.Status == false}
                 &nbsp;
             {:else}

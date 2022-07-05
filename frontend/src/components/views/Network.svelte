@@ -26,7 +26,11 @@
     <div class="col-span-1 p-2">
         <!-- Album art -->
         {#if status.SongInfo.AlbumArt}
-            <img src={artURL} alt="ALBUM ARTWORK" class="mx-auto">
+            <img src={artURL} alt="" class="mx-auto">
+        {:else}
+            <div class="w-40 h-40 bg-gray-100 mx-auto">
+                &nbsp;
+            </div>
         {/if}
         <!-- Album art end -->
     </div>
@@ -34,9 +38,9 @@
     <div class="col-span-1 p-2 lg:align-middle">
         <!-- Song Information -->
         <div class="mb-4 text-center md:text-left">
-            <div class="md:text-3xl text-2xl font-semibold pb-1">{STitle}</div>
-            <div class="text-xl text-gray-800 pb-1">{SAlbum}</div>
-            <div class="text-xl text-gray-800">{SArtist}</div>
+            <div class="md:text-3xl text-2xl font-semibold pb-1">{STitle ? STitle : "No Title"}</div>
+            <div class="text-xl text-gray-800 pb-1">{SAlbum ? SAlbum : "No Album"}</div>
+            <div class="text-xl text-gray-800">{SArtist ? SArtist : "No Artist"}</div>
         </div>
         <!-- Song Information End -->
 
