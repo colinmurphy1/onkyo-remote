@@ -56,10 +56,10 @@ onkyo-remote by running this command:
     docker build -t onkyo-remote .
 
     # Run onkyo-remote with a config.yaml file in the current directory
-    docker run `
-        -e ONKYO_CONFIG=/config/config.yaml `
-        -v ${PWD}/config.yaml:/config/config.yaml `
-        -p 8080:8080 `
+    docker run \
+        -e ONKYO_CONFIG=/config/config.yaml \
+        -v ${PWD}/config.yaml:/config/config.yaml \
+        -p 8080:8080 \
         onkyo-remote
 
 Open a web browser and navigate to http://localhost:8080/api/status. You should
