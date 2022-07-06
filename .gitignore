@@ -8,3 +8,5 @@ config-TX-NR555.yaml
 
 # ignore vscode logs
 .vscode/*.log
+
+vendor/

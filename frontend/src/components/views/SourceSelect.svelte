@@ -54,7 +54,7 @@
 </script>
 
 {#if sourcesLoaded}
-<div class="grid grid-cols-2 lg:grid-cols-4 gap-1">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-1">
     {#each Object.entries(sources) as [id, name]}
         <ListOption key={id} value={name} on:selection={handleSelection} />
     {/each}

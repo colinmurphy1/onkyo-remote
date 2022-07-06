@@ -55,6 +55,11 @@ func (c *Connection) EiscpWatcher() {
 
 		// Get input
 		case "SLI":
+			// Skip sources that do not exist
+			if cmdValue == "N/A" {
+				continue
+			}
+
 			c.Status.Input.HexCode = cmdValue
 			c.Status.Input.Name = Inputs[cmdValue]
 
@@ -68,7 +73,13 @@ func (c *Connection) EiscpWatcher() {
 				c.Status.SongInfo.AlbumArt = false
 				c.AlbumArt.Data = make([]byte, 0)
 				c.AlbumArt.ContentType = ""
+			} else {
+				// If it is network, send some questions
+				c.SendCmd("NMSQSTN")
 			}
+
+			// Get information about the source
+			c.SendCmd("IFAQSTN")
 
 		// Get Song Title (NET/USB ONLY)
 		case "NTI":
@@ -139,6 +150,16 @@ func (c *Connection) EiscpWatcher() {
 			}
 
 			c.Status.SongInfo.Status = s
+
+		// IFA
+		case "IFA":
+			si := strings.Split(cmdValue, ",")              // Split the output into an array
+			c.Status.Input.Info.InputPort = si[0]           // Input port (ANALOG, OPTICAL, COAXIAL?, NETWORK)
+			c.Status.Input.Info.InputFormat = si[1]         // Input Format (PCM, DSD?)
+			c.Status.Input.Info.SamplingFreq = si[3]        // Unknown
+			c.Status.Input.Info.InputSignalChannel = si[4]  // Stereo, Direct, surround sound?, etc.
+			c.Status.Input.Info.ListenMode = si[5]          // How many channels
+			c.Status.Input.Info.OutputSignalChannel = si[6] // Unknown
 
 		// Tuner frequency
 		case "PRS":

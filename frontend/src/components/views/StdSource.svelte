@@ -16,4 +16,27 @@
         * If digital, display sample rate, pcm/dsd, etc.
         * STEREO/DIRECT/5.1 Etc.
     -->
+
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-1 text-gray-600 m-2 text-center">
+        <div>
+            <strong>Port:</strong><br>
+            {status.Input.Info.InputPort ? status.Input.Info.InputPort : "N/A"}
+        </div>
+        <div>
+            <strong>Format:</strong><br>
+            {status.Input.Info.InputFormat ? status.Input.Info.InputFormat : "N/A"}
+        </div>
+        <div>
+            <strong>Sample rate:</strong><br>
+            {status.Input.Info.SamplingFreq ? status.Input.Info.SamplingFreq : "N/A"}
+        </div>
+        <div>
+            <strong>Channels:</strong><br>
+            {status.Input.Info.InputSignalChannel ? status.Input.Info.InputSignalChannel : "N/A"}
+        </div>
+        <div>
+            <strong>Mode:</strong><br>
+            {status.Input.Info.ListenMode ? status.Input.Info.ListenMode : "N/A"}
+        </div>
+    </div>
 </div>

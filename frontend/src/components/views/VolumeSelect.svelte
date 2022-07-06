@@ -60,7 +60,7 @@
     <div class="w-full">
         <input type="range" min="0" max={volume.Max} bind:value={volumeLevel} class="h-full w-full align-middle block">
     </div>
-    <div class="h-full align-bottom font-semibold font-mono text-lg">
+    <div class="h-full font-semibold font-mono text-lg">
         {volumeLevel}
     </div>
     <div class="h-full block align-middle">

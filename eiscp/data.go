@@ -29,9 +29,20 @@ type power struct {
 
 // Current input information
 type input struct {
-	Name      string // Input name
-	HexCode   string // Input HEX code (for debugging, and future custom naming)
-	NetSource string // NET Source (DLNA, AirPlay, Spotify, etc.) Leave blank if not in NET
+	Name      string    // Input name
+	HexCode   string    // Input HEX code (for debugging, and future custom naming)
+	NetSource string    // NET Source (DLNA, AirPlay, Spotify, etc.) Leave blank if not in NET
+	Info      inputInfo // Input source information
+}
+
+// Source information
+type inputInfo struct {
+	InputPort           string
+	InputFormat         string
+	SamplingFreq        string
+	InputSignalChannel  string
+	ListenMode          string
+	OutputSignalChannel string
 }
 
 // Volume status

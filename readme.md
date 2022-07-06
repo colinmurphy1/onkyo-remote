@@ -30,20 +30,37 @@ setting changes, for example to disable the eISCP logging and web interface.
 Install dependencies and compile onkyo-remote:
 
     make deps
-    make build
 
-This will compile the Svelte.js frontend and then build three executables. When
-it finishes compiling everything, you may launch onkyo-remote by running
-this command:
+    # Build for linux, macos, or windows, or everything, respectively
+    make linux
+    make darwin
+    make windows
+    make all
+
+This will compile the Svelte.js frontend and then build an executable for your
+platform of choice. When it finishes compiling everything, you may launch
+onkyo-remote by running this command:
 
     # Linux
-    ./onkyo-remote -config ./config.yaml
+    ./onkyo-remote-linux -config ./config.yaml
 
     # macOS
     ./onkyo-remote-darwin -config ./config.yaml
 
     # Windows
     ./onkyo-remote-windows.exe -config ./config.yaml
+
+### Running with Docker
+
+    # Build the container
+    docker build -t onkyo-remote .
+
+    # Run onkyo-remote with a config.yaml file in the current directory
+    docker run `
+        -e ONKYO_CONFIG=/config/config.yaml `
+        -v ${PWD}/config.yaml:/config/config.yaml `
+        -p 8080:8080 `
+        onkyo-remote
 
 Open a web browser and navigate to http://localhost:8080/api/status. You should
 get a response returning the general status of the receiver.
