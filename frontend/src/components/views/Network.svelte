@@ -6,6 +6,25 @@
     import ProgressBar from '../ProgressBar.svelte'
     import NetControl from '../buttons/NetControl.svelte';
 
+    // Update track information event handler
+    const updateTrackInfo = async () => {
+        // Make an http request
+        const req = await fetch("/api/net/update", {
+            method: "GET",
+        })
+        .then(response => {
+            if (! response.ok) {
+                console.log("Could not update track info")
+            }
+            return response.json()
+        })
+        .then(data => data)
+
+        if (req.message == "OK") return true
+        return false
+    }
+
+
     // Shorthand variables
     let STitle, SArtist, SAlbum, artURL, TCurrent, TTotal
     $: STitle = status.SongInfo.Title
@@ -23,10 +42,10 @@
 </script>
 
 <div class="grid md:grid-cols-2 sm:grid-cols-1">
-    <div class="col-span-1 p-2">
+    <div class="col-span-1 p-2" on:click={updateTrackInfo}>
         <!-- Album art -->
         {#if status.SongInfo.AlbumArt}
-            <img src={artURL} alt="" class="mx-auto">
+            <img src={artURL} alt="" class="mx-auto min-h-full">
         {:else}
             <div class="w-40 h-40 bg-gray-100 mx-auto">
             </div>
