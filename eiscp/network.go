@@ -7,6 +7,7 @@ import (
 	"log"
 	"net"
 	"strconv"
+	"time"
 )
 
 // Creates a new Onkyo stereo
@@ -119,4 +120,18 @@ func (c *Connection) RecvCmd() (string, error) {
 
 	log.Println("RECV:", response)
 	return response, nil
+}
+
+// Sends multiple commands in order
+// Specify delay in ms as uint, and commands
+func (c *Connection) SendMultipleCmds(delay uint, commands ...string) error {
+	for _, command := range commands {
+		// send command, if there's an error return the error
+		err := c.SendCmd(command)
+		if err != nil {
+			return err
+		}
+		time.Sleep(time.Duration(delay) * time.Millisecond)
+	}
+	return nil
 }

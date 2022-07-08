@@ -63,8 +63,28 @@ func (c *Connection) EiscpWatcher() {
 			c.Status.Input.HexCode = cmdValue
 			c.Status.Input.Name = Inputs[cmdValue]
 
-			// If input is no longer NET (2B), clear some fields
-			if c.Status.Input.HexCode != "2B" {
+			log.Println("Source changed to", c.Status.Input.Name)
+
+			// On preset type, determine some fields
+			switch Conn.Status.Input.HexCode {
+			// Network
+			case "2B":
+				c.SendMultipleCmds(100,
+					"NJAREQ",
+					"NTIQSTN",
+					"NATQSTN",
+					"NALQSTN",
+					"NTRQSTN",
+					"NSTQSTN",
+				)
+			// Tuner
+			case "24", "25", "26":
+				Conn.SendMultipleCmds(20,
+					"PRSQSTN", // Tuner preset
+					"TUNQSTN", // Tuner frequency
+				)
+			default:
+				// Clear out information that is not useful in a standard source
 				c.Status.Input.NetSource = ""
 				c.Status.SongInfo.Title = ""
 				c.Status.SongInfo.Album = ""
@@ -73,12 +93,11 @@ func (c *Connection) EiscpWatcher() {
 				c.Status.SongInfo.AlbumArt = false
 				c.AlbumArt.Data = make([]byte, 0)
 				c.AlbumArt.ContentType = ""
-			} else {
-				// If it is network, send some questions
-				c.SendCmd("NMSQSTN")
+				c.Status.Tuner.Frequency = 0
+				c.Status.Tuner.Preset = 0
 			}
 
-			// Get information about the source
+			// Always get information about the source
 			c.SendCmd("IFAQSTN")
 
 		// Get Song Title (NET/USB ONLY)
@@ -116,7 +135,7 @@ func (c *Connection) EiscpWatcher() {
 		case "NJA":
 			// 2-http://url
 			if cmdValue[0:2] == string("2-") {
-				// Save album art in memory
+				// Download album art off receiver's HTTP server and store in memory
 				art, ctype, err := lib.GetArt(cmdValue[2:])
 				if err != nil {
 					log.Println("Error downloading album art:", err)
