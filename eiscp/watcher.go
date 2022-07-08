@@ -69,13 +69,14 @@ func (c *Connection) EiscpWatcher() {
 			switch Conn.Status.Input.HexCode {
 			// Network
 			case "2B":
-				c.SendMultipleCmds(100,
-					"NJAREQ",
+				c.SendMultipleCmds(10,
 					"NTIQSTN",
 					"NATQSTN",
 					"NALQSTN",
 					"NTRQSTN",
 					"NSTQSTN",
+					"NMSQSTN",
+					"NJAREQ",
 				)
 			// Tuner
 			case "24", "25", "26":
