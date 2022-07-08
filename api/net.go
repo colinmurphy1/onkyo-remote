@@ -36,3 +36,22 @@ func SetNetPlayback(c *gin.Context) {
 
 	lib.Response(c, 200, "OK", nil)
 }
+
+// Endpoint that updates song title, album, artist, and jacket information
+func NetTrackUpdate(c *gin.Context) {
+	// Send block of commands
+	err := eiscp.Conn.SendMultipleCmds(
+		10,
+		"NTIQSTN", // Title
+		"NALQSTN", // Album
+		"NATQSTN", // Artist
+		"NJAREQ",  // Album art
+	)
+
+	if err != nil {
+		lib.Response(c, 500, "Error while sending commands", err)
+		return
+	}
+
+	lib.Response(c, 200, "OK", nil)
+}

@@ -58,6 +58,9 @@ func main() {
 		// NET PLAYBACK CONTROLS
 		routes.GET("/net/:key", api.SetNetPlayback)
 
+		// NET TRACK UPDATE
+		routes.GET("/net/update", api.NetTrackUpdate)
+
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
 	}
