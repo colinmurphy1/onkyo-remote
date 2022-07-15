@@ -32,5 +32,5 @@ func SetSource(c *gin.Context) {
 
 // Return source list
 func GetSource(c *gin.Context) {
-	lib.Response(c, 200, "OK", eiscp.Inputs)
+	lib.Response(c, 200, "OK", eiscp.EnabledInputs)
 }

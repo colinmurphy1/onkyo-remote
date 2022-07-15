@@ -25,5 +25,12 @@ logging:
 inputs:
   - hex: 20
     name: "TV Optical Out"
-  - hex: 02
-    name: "PolyStation 2"
+
+# You may optionally specify any inputs that you do not want to display in the
+# input selector by specifying its associated hex code.
+hidden_inputs:
+  - 31
+  - 32
+  - 33
+  - 2D
+  - 40

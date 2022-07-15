@@ -20,7 +20,7 @@
         showVolume = event.detail
 	}
 
-    export let status
+    export let status, sources
 </script>
 
 <header class="px-0.5 bg-gray-200 border-b border-b-gray-300">
@@ -54,7 +54,7 @@
 
 <div class="mt-1 mb-4 max-w-4xl mx-auto">
     {#if showSourceList }
-        <SourceSelect on:sourcelist={handleSourceList} />
+        <SourceSelect sources={sources} on:sourcelist={handleSourceList} />
     {/if}
     {#if showVolume }
         <VolumeSelect volume={status.Volume} on:showvolume={handleVolume} />

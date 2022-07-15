@@ -20,6 +20,11 @@ func init() {
 	// Set up custom input names
 	noRename := []string{"24", "25", "26", "27", "28", "29", "31", "32", "33", "2B", "2C", "2D", "2E"}
 	for _, input := range config.Conf.Inputs {
+		// Hex code must be 2 chars in length
+		if len(input.Hex) != 2 {
+			log.Printf("Invalid hex code length for input \"%s\"\n", input.Name)
+		}
+
 		// Prevent adding additional inputs that are not in the eiscp spec
 		if _, ok := Inputs[input.Hex]; !ok {
 			log.Println(input.Hex, "is not an input code supported by Onkyo. Skipping.")
@@ -35,6 +40,18 @@ func init() {
 		Inputs[input.Hex] = input.Name
 	}
 
+	// Hide any inputs that are hidden in the yaml configuration file
+	EnabledInputs = Inputs
+	for _, input := range config.Conf.HiddenInputs {
+		// Prevent adding additional inputs that are not in the eiscp spec
+		if _, ok := Inputs[input]; !ok {
+			log.Println(input, "is not an input code supported by Onkyo. Skipping.")
+			continue
+		}
+		// Remove entry from the EnabledInputs map
+		delete(EnabledInputs, input)
+	}
+
 	// Connect to the receiver
 	Conn = Onkyo(config.Conf.Receiver.Address, config.Conf.Receiver.Port)
 
@@ -47,36 +64,13 @@ func init() {
 	// Initialize OnkyoStatus struct by running QSTN commands.
 	// NOTE: It does not matter if you run a QSTN command with the receiver
 	// powered on or off, it'll answer with what it has stored.
-	startCommands := []string{
-		// Get power status
-		"PWRQSTN",
-
-		// Get volume level and muting status
-		"MVLQSTN",
-		"AMTQSTN",
-
-		// Get current source
-		"SLIQSTN",
-
-		// Get tuner preset and frequency
-		"PRSQSTN",
-		"TUNQSTN",
-
-		// Get NET song, album, artist, details
-		"NTIQSTN",
-		"NATQSTN",
-		"NALQSTN",
-		"NTRQSTN",
-
-		// Enable album (jacket) art, and have it return a LINK instead of
-		// sending a jpeg or bmp image over eISCP
-		"NJAENA",
-		"NJALINK",
-	}
-	for i := 0; i < len(startCommands); i++ {
-		err := Conn.SendCmd(startCommands[i])
-		if err != nil {
-			log.Println("Error running startup command:", err)
-		}
-	}
+	Conn.SendMultipleCmds(
+		50,
+		"PWRQSTN", // Get power status
+		"MVLQSTN", // Get volume level
+		"AMTQSTN", // Mute status
+		"SLIQSTN", // Get Source
+		"NJENA",   // Enable album art (jacket)
+		"NJALINK", // Send URL instead of raw image data over the wire
+	)
 }
