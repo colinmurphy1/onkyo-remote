@@ -110,6 +110,9 @@ var Inputs = map[string]string{
 	"40": "UNIVERSAL PORT",
 }
 
+// Inputs not disabled in config.yaml (populated on program start)
+var EnabledInputs = map[string]string{}
+
 // NET Services
 var NetServices = map[string]string{
 	"00": "DLNA",
