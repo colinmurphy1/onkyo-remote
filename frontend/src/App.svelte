@@ -16,6 +16,7 @@
 	let loaded = false
 	let loadError = ""
 	let recvStatus
+	let recvSource
 
 	const updateStatus = async () => {
 		try {
@@ -29,9 +30,24 @@
 		}
 	}
 
-	// On page load, get receiver status  
+    // API call to get all available inputs
+    const getSource = async () => {
+        const req = await fetch("/api/source", { method: "GET" })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Bad network response")
+            }
+            return response.json()
+        })
+        .then(data => data)
+
+        return req.data
+    }
+
+	// On page load, get receiver status and sources
 	onMount(async () => {
 		await updateStatus()
+		recvSource = await getSource()
 	})
 
 	// Update status every second
@@ -39,7 +55,7 @@
 </script>
 
 {#if loaded}
-	<Header status={recvStatus} />
+	<Header status={recvStatus} sources={recvSource} />
 	<Page>
 		{#if recvStatus.Power.Status}
 			{#if recvStatus.Input.HexCode == "2B"}
