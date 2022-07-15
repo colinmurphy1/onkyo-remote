@@ -10,6 +10,12 @@ import (
 
 // Watches for responses from the receiver, and configures the status struct accordingly
 func (c *Connection) EiscpWatcher() {
+	// Keep track of how many tries to find title, album, and artist information in NET sources.
+	var titleRetries, albumRetries, artistRetries int
+
+	// Maximum retries if the title, album, or artist cannot be identified
+	var maxRetries int = 5
+
 	var response, cmd, cmdValue string
 	var err error
 
@@ -69,14 +75,9 @@ func (c *Connection) EiscpWatcher() {
 			switch Conn.Status.Input.HexCode {
 			// Network
 			case "2B":
-				c.SendMultipleCmds(10,
-					"NTIQSTN",
-					"NATQSTN",
-					"NALQSTN",
-					"NTRQSTN",
-					"NSTQSTN",
-					"NMSQSTN",
-					"NJAREQ",
+				c.SendMultipleCmds(50,
+					"NSTQSTN", "NMSQSTN", "NTIQSTN",
+					"NATQSTN", "NALQSTN", "NTRQSTN",
 				)
 			// Tuner
 			case "24", "25", "26":
@@ -118,6 +119,37 @@ func (c *Connection) EiscpWatcher() {
 			ntm := strings.Split(cmdValue, "/")
 			c.Status.SongInfo.Time.Current = ntm[0]
 			c.Status.SongInfo.Time.Length = ntm[1]
+
+			// When a track changes, reset the track information
+			if ntm[0] == "--:--:--" || ntm[0] == "00:00:01" {
+				c.Status.SongInfo.Title = ""
+				c.Status.SongInfo.Artist = ""
+				c.Status.SongInfo.Album = ""
+				titleRetries = 0
+				artistRetries = 0
+				albumRetries = 0
+			}
+
+			// If title is not provided, attempt to get it `maxRetries` times
+			if c.Status.SongInfo.Title == "" || c.Status.SongInfo.Title == " " && titleRetries < maxRetries {
+				log.Printf("Asking receiver for track title (retry %d)\n", titleRetries)
+				c.SendCmd("NTIQSTN")
+				titleRetries += 1
+			}
+
+			// If album is not provided, attempt to get it `maxRetries` times
+			if c.Status.SongInfo.Album == "" || c.Status.SongInfo.Album == " " && albumRetries < maxRetries {
+				log.Printf("Asking receiver for album name (retry %d)\n", albumRetries)
+				c.SendCmd("NALQSTN")
+				albumRetries += 1
+			}
+
+			// If artist is not provided, attempt to get it `maxRetries` times
+			if c.Status.SongInfo.Artist == "" || c.Status.SongInfo.Artist == " " && artistRetries < maxRetries {
+				log.Printf("Asking receiver for artist name (retry %d)\n", artistRetries)
+				c.SendCmd("NATQSTN")
+				artistRetries += 1
+			}
 
 		// Track position
 		case "NTR":
