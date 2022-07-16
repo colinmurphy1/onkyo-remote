@@ -8,6 +8,8 @@ import (
 	"net"
 	"strconv"
 	"time"
+
+	"github.com/colinmurphy1/onkyo-remote/config"
 )
 
 // Creates a new Onkyo stereo
@@ -64,10 +66,12 @@ func (c *Connection) SendCmd(command string) error {
 	cmd.Destination = c.iscpDest
 	cmd.Command = []byte(command)
 
+	// Print EISCP log if enabled
+	if config.Conf.Logging.Eiscp {
+		log.Println("SEND:", string(cmd.Command))
+	}
+
 	// Send command
-
-	log.Println("SEND:", string(cmd.Command))
-
 	slen, err := c.con.Write(cmd.EiscpCommand())
 	_ = slen // We don't care about the response length
 	if err != nil {
@@ -118,7 +122,10 @@ func (c *Connection) RecvCmd() (string, error) {
 
 	response := string(iscp)
 
-	log.Println("RECV:", response)
+	// Print EISCP log if enabled
+	if config.Conf.Logging.Eiscp {
+		log.Println("RECV:", response)
+	}
 	return response, nil
 }
 

@@ -38,6 +38,7 @@ func (c *Connection) EiscpWatcher() {
 				pwrStatus = true
 			}
 			c.Status.Power.Status = pwrStatus
+			log.Printf("Power set to %s\n", lib.TOp(pwrStatus, "ON", "OFF"))
 
 		// Get volume level
 		case "MVL":
@@ -47,6 +48,7 @@ func (c *Connection) EiscpWatcher() {
 				continue // ignore the error and don't continue
 			}
 			c.Status.Volume.Level = int(vol)
+			log.Printf("Volume set to %d\n", vol)
 
 		// Get mute status
 		case "AMT":
@@ -71,6 +73,18 @@ func (c *Connection) EiscpWatcher() {
 
 			log.Println("Source changed to", c.Status.Input.Name)
 
+			// Reset unneeded status fields on source change
+			c.Status.Input.NetSource = ""
+			c.Status.SongInfo.Title = ""
+			c.Status.SongInfo.Album = ""
+			c.Status.SongInfo.Artist = ""
+			c.Status.SongInfo.Status = ""
+			c.Status.SongInfo.AlbumArt = false
+			c.AlbumArt.Data = make([]byte, 0)
+			c.AlbumArt.ContentType = ""
+			c.Status.Tuner.Frequency = 0
+			c.Status.Tuner.Preset = 0
+
 			// On preset type, determine some fields
 			switch Conn.Status.Input.HexCode {
 			// Network
@@ -85,18 +99,6 @@ func (c *Connection) EiscpWatcher() {
 					"PRSQSTN", // Tuner preset
 					"TUNQSTN", // Tuner frequency
 				)
-			default:
-				// Clear out information that is not useful in a standard source
-				c.Status.Input.NetSource = ""
-				c.Status.SongInfo.Title = ""
-				c.Status.SongInfo.Album = ""
-				c.Status.SongInfo.Artist = ""
-				c.Status.SongInfo.Status = ""
-				c.Status.SongInfo.AlbumArt = false
-				c.AlbumArt.Data = make([]byte, 0)
-				c.AlbumArt.ContentType = ""
-				c.Status.Tuner.Frequency = 0
-				c.Status.Tuner.Preset = 0
 			}
 
 			// Always get information about the source
@@ -162,7 +164,12 @@ func (c *Connection) EiscpWatcher() {
 			// NET Source (see data.go for options)
 			// This does show other information (such as if you like a song),
 			// but this isn't going to be too useful for the controller.
-			c.Status.Input.NetSource = NetServices[cmdValue[7:9]]
+			ns := NetServices[cmdValue[7:9]]
+			if ns == "" {
+				ns = "Unknown"
+			}
+			c.Status.Input.NetSource = ns
+			log.Printf("NETWORK source is %s\n", ns)
 
 		// Jacket (Album artwork)
 		case "NJA":

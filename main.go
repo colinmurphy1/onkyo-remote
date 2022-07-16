@@ -8,6 +8,7 @@ import (
 	"github.com/colinmurphy1/onkyo-remote/api"
 	"github.com/colinmurphy1/onkyo-remote/config"
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
+	"github.com/colinmurphy1/onkyo-remote/lib"
 	"github.com/gin-gonic/gin"
 )
 
@@ -22,15 +23,16 @@ func main() {
 	// Disconnect from the receiver when the software terminates
 	defer eiscp.Conn.Disconnect()
 
-	// Disable gin logs if disabled
-	if !config.Conf.Logging.HTTP {
+	// Set up router
+	if config.Conf.Logging.HTTP {
+		router = gin.Default()
+	} else {
 		gin.SetMode(gin.ReleaseMode)
+		router = gin.New() // Logs disabled
 	}
 
-	// Set up router
-	router = gin.Default()
-
-	router.Use(CORSMiddleware())
+	// Enable CORS middleware
+	router.Use(lib.CORSMiddleware())
 
 	// Create a router group
 	routes = router.Group("/api")
