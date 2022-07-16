@@ -38,6 +38,7 @@ func (c *Connection) EiscpWatcher() {
 				pwrStatus = true
 			}
 			c.Status.Power.Status = pwrStatus
+			log.Println("Power set to", lib.TOp(pwrStatus, "ON", "OFF"))
 
 		// Get volume level
 		case "MVL":
@@ -163,6 +164,7 @@ func (c *Connection) EiscpWatcher() {
 			// This does show other information (such as if you like a song),
 			// but this isn't going to be too useful for the controller.
 			c.Status.Input.NetSource = NetServices[cmdValue[7:9]]
+			log.Println("NETWORK source is", c.Status.Input.NetSource)
 
 		// Jacket (Album artwork)
 		case "NJA":

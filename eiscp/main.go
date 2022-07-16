@@ -1,7 +1,6 @@
 package eiscp
 
 import (
-	"io/ioutil"
 	"log"
 
 	"github.com/colinmurphy1/onkyo-remote/config"
@@ -12,11 +11,6 @@ import (
 var Conn *Connection
 
 func init() {
-	// Disable logging if it is not enabled
-	if !config.Conf.Logging.Eiscp {
-		log.SetOutput(ioutil.Discard)
-	}
-
 	// Set up custom input names
 	noRename := []string{"24", "25", "26", "27", "28", "29", "31", "32", "33", "2B", "2C", "2D", "2E"}
 	for _, input := range config.Conf.Inputs {
