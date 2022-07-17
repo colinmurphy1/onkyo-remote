@@ -123,7 +123,7 @@ func (c *Connection) RecvCmd() (string, error) {
 	// If the length of the eISCP response is not the same as the actual response,
 	// repeatedly ask for more data until the actual length is equal to the data size
 	for len(iscp) != int(dataSize) {
-		moreData, err := c.RecvMore()
+		moreData, err := c.recvMore()
 		if err != nil {
 			log.Println("Error receiving extended response from receiver")
 			break // give up
@@ -142,9 +142,10 @@ func (c *Connection) RecvCmd() (string, error) {
 	return response, nil
 }
 
-// This is essentially the RecvCmd command, without any checks. It is used when
-// there is a response that is longer than the
-func (c *Connection) RecvMore() ([]byte, error) {
+// This is essentially the RecvCmd command, without any checks. It used to
+// receive command responses that are larger than the maximum size of an eiscp
+// response
+func (c *Connection) recvMore() ([]byte, error) {
 	reader := bufio.NewReader(c.con)
 
 	// Read 2048 bytes

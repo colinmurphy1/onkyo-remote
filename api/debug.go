@@ -33,6 +33,13 @@ func ReceiverXml(c *gin.Context) {
 		c.Data(403, "text/plain", []byte("This endpoint is disabled"))
 		return
 	}
+
+	// If the data is empty do not return a response
+	if len(eiscp.Xml) == 0 {
+		c.Data(503, "text/plain", []byte("No XML data to display"))
+		return
+	}
+
 	// return xml data from receiver
 	c.Data(200, "text/xml", []byte(eiscp.Xml))
 }
