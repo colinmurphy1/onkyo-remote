@@ -3,10 +3,7 @@ package config
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
 	"os"
-
-	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
@@ -35,9 +32,9 @@ type configInputs struct {
 	Name string `yaml:"name"`
 }
 
-var Conf *Config
+// Initialize Conf struct
+var Conf *Config = new(Config)
 
-// Configure environment variables and set defaults
 func init() {
 	// Command-line arguments
 	configFile := flag.String("config", "", "Path to yaml config file")
@@ -49,21 +46,9 @@ func init() {
 		os.Exit(1)
 	}
 
-	// Initialize Config struct
-	Conf = new(Config)
-
-	// Read yaml file
-	content, err := ioutil.ReadFile(*configFile)
-	if err != nil {
-		fmt.Println("Could not open configuration file:", err)
-		os.Exit(1)
-	}
-
-	// Load yaml config into Config struct
-	err = yaml.Unmarshal(content, &Conf)
-
-	if err != nil {
-		fmt.Println("Could not parse configuration file:", err)
+	// Read and parse yaml configuration file
+	if err := Conf.parseConfig(*configFile); err != nil {
+		fmt.Println("Error loading configuration:\n", err)
 		os.Exit(1)
 	}
 }
