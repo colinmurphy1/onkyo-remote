@@ -63,6 +63,9 @@ func main() {
 		// NET TRACK UPDATE
 		routes.GET("/net/update", api.NetTrackUpdate)
 
+		// TUNER PRESET
+		routes.GET("/tuner/preset/:preset", api.SetTunerPreset)
+
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
 

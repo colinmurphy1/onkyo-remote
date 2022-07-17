@@ -35,11 +35,11 @@ func ReceiverXml(c *gin.Context) {
 	}
 
 	// If the data is empty do not return a response
-	if len(eiscp.Xml) == 0 {
+	if len(eiscp.Conn.XmlData) == 0 {
 		c.Data(503, "text/plain", []byte("No XML data to display"))
 		return
 	}
 
 	// return xml data from receiver
-	c.Data(200, "text/xml", []byte(eiscp.Xml))
+	c.Data(200, "text/xml", []byte(eiscp.Conn.XmlData))
 }

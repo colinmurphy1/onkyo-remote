@@ -59,7 +59,7 @@ func init() {
 	// NOTE: It does not matter if you run a QSTN command with the receiver
 	// powered on or off, it'll answer with what it has stored.
 	Conn.SendMultipleCmds(
-		50,
+		100,
 		"PWRQSTN", // Get power status
 		"MVLQSTN", // Get volume level
 		"AMTQSTN", // Mute status

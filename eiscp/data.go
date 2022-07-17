@@ -1,6 +1,8 @@
 package eiscp
 
-import "net"
+import (
+	"net"
+)
 
 // Struct that stores the connection to the receiver
 type Connection struct {
@@ -9,17 +11,25 @@ type Connection struct {
 	con         net.Conn    // Connection is stored here
 	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
 	iscpDest    byte        // ISCP destination (default 0x31)
-	Status      OnkyoStatus // Store status of receiver
+	Status      OnkyoStatus // Store state of receiver
 	AlbumArt    albumArt    // Album art
+	XmlData     string      // XML data for debugging
 }
 
-// Struct that stores the general status of the receiver
+type receiverInfo struct {
+	Brand        string // Brand (Onkyo, Integra, Pioneer?)
+	ModelName    string // Model number
+	FriendlyName string // Friendly name (user-definable at web interface)
+}
+
+// Struct that stores the current state of the receiver
 type OnkyoStatus struct {
-	Power    power    // Power status
-	Input    input    // Input source
-	Volume   volume   // Volume status
-	SongInfo songInfo // Song information
-	Tuner    tuner    // Tuner status
+	Power    power        // Power status
+	Input    input        // Input source
+	Volume   volume       // Volume status
+	SongInfo songInfo     // Song information
+	Tuner    tuner        // Tuner status
+	Info     receiverInfo // Information about the receiver
 }
 
 // Power status
@@ -77,10 +87,39 @@ type songTrack struct {
 
 // Tuner status
 type tuner struct {
-	Frequency float64 // Tuner frequency
-	Preset    int     // Tuner preset
+	Frequency  int               // Tuner frequency
+	Preset     int               // Tuner preset
+	PresetList map[string]string // presets
 }
 
+// =============================================================================
+// These structs are used for unmarshaling the XML retrieved from the receiver
+
+// Onkyo XML info
+type onkyoXML struct {
+	Device onkyoXMLDeviceInfo `xml:"device"`
+}
+
+// Device Info
+type onkyoXMLDeviceInfo struct {
+	Brand        string         `xml:"brand"`        // Brand (Onkyo, Integra, Pioneer?)
+	ModelName    string         `xml:"model"`        // Model number
+	FriendlyName string         `xml:"friendlyname"` // Friendly name (user-definable at web interface)
+	PresetList   onkyoXMLPreset `xml:"presetlist"`
+}
+
+// Preset list
+type onkyoXMLPreset struct {
+	Preset []onkyoXMLPresetItem `xml:"preset"`
+}
+
+// Preset
+type onkyoXMLPresetItem struct {
+	Id        string `xml:"id,attr"`   // Hexadecimal id
+	Frequency string `xml:"freq,attr"` // Frequency
+}
+
+// =============================================================================
 // Input names
 var Inputs = map[string]string{
 	"00": "VCR/DVR",
@@ -113,6 +152,7 @@ var Inputs = map[string]string{
 // Inputs not disabled in config.yaml (populated on program start)
 var EnabledInputs = map[string]string{}
 
+// =============================================================================
 // NET Services
 var NetServices = map[string]string{
 	"00": "DLNA",
@@ -141,9 +181,9 @@ var NetServices = map[string]string{
 	"F4": "Bluetooth",
 }
 
+// =============================================================================
+// ALBUM ART
 type albumArt struct {
 	Data        []byte // Binary image data
 	ContentType string // Content type (eg. image/jpeg)
 }
-
-var Xml string
