@@ -228,6 +228,11 @@ func (c *Connection) EiscpWatcher() {
 		case "TUN":
 			c.Status.Tuner.Frequency, _ = strconv.ParseFloat(cmdValue, 64)
 
+		// Receiver information in XML (NRI)
+		case "NRI":
+			//log.Printf("Received XML data from receiver:\n\n%s\n", cmdValue)
+			Xml = cmdValue
+
 		// Ignore unknown commands
 		default:
 			continue

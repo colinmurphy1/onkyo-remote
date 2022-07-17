@@ -145,3 +145,5 @@ type albumArt struct {
 	Data        []byte // Binary image data
 	ContentType string // Content type (eg. image/jpeg)
 }
+
+var Xml string

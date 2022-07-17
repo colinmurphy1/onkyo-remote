@@ -66,5 +66,6 @@ func init() {
 		"SLIQSTN", // Get Source
 		"NJENA",   // Enable album art (jacket)
 		"NJALINK", // Send URL instead of raw image data over the wire
+		"NRIQSTN", // XML data from receiver (gets model, etc)
 	)
 }

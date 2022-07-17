@@ -7,14 +7,14 @@ import (
 )
 
 type Config struct {
-	Receiver     configReceiver `yaml:"receiver"`      // IP address or hostname of the receiver
-	HTTPPort     string         `yaml:"http_port"`     // Port that the API listens on
-	EnableRemote bool           `yaml:"web_remote"`    // Enable the web-based remote
-	EnableRaw    bool           `yaml:"api_raw"`       // Enable the /api/raw/:command endpoint
-	MaxVolume    uint           `yaml:"max_volume"`    // Maximum volume level
-	Logging      configLogging  `yaml:"logging"`       // Logging settings
-	Inputs       []configInputs `yaml:"inputs"`        // Custom inputs
-	HiddenInputs []string       `yaml:"hidden_inputs"` // Hidden inputs
+	Receiver         configReceiver `yaml:"receiver"`      // IP address or hostname of the receiver
+	HTTPPort         string         `yaml:"http_port"`     // Port that the API listens on
+	EnableRemote     bool           `yaml:"web_remote"`    // Enable the web-based remote
+	EnableDebugTools bool           `yaml:"debug_tools"`   // Enable the debugging endpoints
+	MaxVolume        uint           `yaml:"max_volume"`    // Maximum volume level
+	Logging          configLogging  `yaml:"logging"`       // Logging settings
+	Inputs           []configInputs `yaml:"inputs"`        // Custom inputs
+	HiddenInputs     []string       `yaml:"hidden_inputs"` // Hidden inputs
 }
 
 type configReceiver struct {

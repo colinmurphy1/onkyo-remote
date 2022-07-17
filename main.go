@@ -51,7 +51,7 @@ func main() {
 		routes.GET("/source", api.GetSource)
 		routes.GET("/source/:sourceID", api.SetSource)
 
-		// RAW COMMAND
+		// RAW COMMAND (if debug tools are enabled)
 		routes.GET("/raw/:command", api.SendRaw)
 
 		// ON-SCREEN DISPLAY
@@ -65,6 +65,9 @@ func main() {
 
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
+
+		// XML DATA (if debug tools are enabled)
+		routes.GET("/xml", api.ReceiverXml)
 	}
 
 	// Web remote control

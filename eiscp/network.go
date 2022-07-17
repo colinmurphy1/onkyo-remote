@@ -115,17 +115,49 @@ func (c *Connection) RecvCmd() (string, error) {
 
 	// Get ISCP response
 	iscp := make([]byte, dataSize)
-	reader.Read(iscp)
+	respLength, _ := reader.Read(iscp)
+
+	// Trim unused bytes
+	iscp = iscp[:respLength]
+
+	// If the length of the eISCP response is not the same as the actual response,
+	// repeatedly ask for more data until the actual length is equal to the data size
+	for len(iscp) != int(dataSize) {
+		moreData, err := c.RecvMore()
+		if err != nil {
+			log.Println("Error receiving extended response from receiver")
+			break // give up
+		}
+		// Append the iscp data to build a full response
+		iscp = append(iscp, moreData...)
+	}
 
 	// Remove end characters
-	iscp = iscp[:len(iscp)-3]
-
-	response := string(iscp)
+	response := string(iscp[:len(iscp)-3])
 
 	// Print EISCP log if enabled
 	if config.Conf.Logging.Eiscp {
 		log.Println("RECV:", response)
 	}
+	return response, nil
+}
+
+// This is essentially the RecvCmd command, without any checks. It is used when
+// there is a response that is longer than the
+func (c *Connection) RecvMore() ([]byte, error) {
+	reader := bufio.NewReader(c.con)
+
+	// Read 2048 bytes
+	chunk := make([]byte, 2048)
+
+	respLength, err := reader.Read(chunk)
+	if err != nil {
+		return nil, errors.New("could not get response from receiver")
+	}
+
+	// Trim unused bytes
+	response := chunk[:respLength]
+
 	return response, nil
 }
 

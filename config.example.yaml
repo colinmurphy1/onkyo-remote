@@ -9,8 +9,9 @@ http_port: 8080
 # Enable the javascript-based remote app
 web_remote: true
 
-# Enable or disable the /api/raw/:command endpoint
-api_raw: false
+# Debugging tools, enables the /api/xml and /api/raw/:command endpoints
+# You should leave this disabled unless you explicitly need this functionality.
+debug_tools: true
 
 # Max volume you can set using onkyo-remote
 max_volume: 40
