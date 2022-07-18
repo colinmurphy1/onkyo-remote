@@ -11,15 +11,15 @@ web_remote: true
 
 # Debugging tools, enables the /api/xml and /api/raw/:command endpoints
 # You should leave this disabled unless you explicitly need this functionality.
-debug_tools: true
+debug_tools: false
 
 # Max volume you can set using onkyo-remote
 max_volume: 40
 
 # Logging settings
 logging:
-  eiscp: true
-  http: true
+  eiscp: false
+  http: false
 
 # Input declarations
 # Only inputs specified here will be renamed from their defaults
