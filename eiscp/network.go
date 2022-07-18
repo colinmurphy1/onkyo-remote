@@ -148,8 +148,8 @@ func (c *Connection) RecvCmd() (string, error) {
 func (c *Connection) recvMore() ([]byte, error) {
 	reader := bufio.NewReader(c.con)
 
-	// Read 2048 bytes
-	chunk := make([]byte, 2048)
+	// Read 8192 bytes
+	chunk := make([]byte, 8192)
 
 	respLength, err := reader.Read(chunk)
 	if err != nil {
