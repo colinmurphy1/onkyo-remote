@@ -1,8 +1,10 @@
 <script>
+    import PresetList from "../list/PresetList.svelte"
+
     // Get status from receiver
     export let status;
 
-    let frequency, band
+    let frequency, band, preset
 
     $: {
         if (status.Input.HexCode == "24") {
@@ -21,11 +23,26 @@
             band = "KHz"
             frequency = status.Tuner.Frequency
         }
+
+        // Convert preset from hexidecimal to decimal
+        preset = parseInt(status.Tuner.Preset, 16)
     }
 
+    const handlePreset = async (event) => {
+        const preset = event.detail.preset
+        await fetch("/api/tuner/preset/" + preset, {
+            method: "GET",
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Exception("Response was not OK")
+            }
+        })
+    }
 </script>
 
 <div>
+    <!-- TUNER Frequency and preset -->
     <div class="text-center">
         <div class="text-4xl font-semibold my-4">
             {frequency}
@@ -39,4 +56,13 @@
             {/if}
         </div>
     </div>
+    <!-- TUNER Frequency and preset END -->
+
+    <!-- TUNER Preset list -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-1 my-4">
+        {#each Object.entries(status.Tuner.PresetList) as [id, preset]}
+            <PresetList preset={id} frequency={preset.Frequency} band={preset.Band} on:selection={handlePreset} />
+        {/each}
+    </div>
+    <!-- TUNER Preset list END -->
 </div>

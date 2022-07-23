@@ -87,9 +87,14 @@ type songTrack struct {
 
 // Tuner status
 type tuner struct {
-	Frequency  int               // Tuner frequency
-	Preset     int               // Tuner preset
-	PresetList map[string]string // presets
+	Frequency  int                    // Tuner frequency
+	Preset     int                    // Tuner preset
+	PresetList map[string]tunerPreset // presets
+}
+
+type tunerPreset struct {
+	Frequency string // Tuner frequency
+	Band      int    // Band (0: No preset, 1: FM, 2: AM)
 }
 
 // =============================================================================
@@ -117,6 +122,7 @@ type onkyoXMLPreset struct {
 type onkyoXMLPresetItem struct {
 	Id        string `xml:"id,attr"`   // Hexadecimal id
 	Frequency string `xml:"freq,attr"` // Frequency
+	Band      int    `xml:"band,attr"` // Band (0: Not Set, 1: FM, 2: AM)
 }
 
 // =============================================================================

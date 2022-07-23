@@ -244,13 +244,16 @@ func (c *Connection) EiscpWatcher() {
 			}
 
 			// Put data in the correct locations of the Status struct
-			plist := make(map[string]string)
+			plist := make(map[string]tunerPreset)
 			for _, preset := range xmldata.Device.PresetList.Preset {
 				// Skip undefined presets
 				if preset.Frequency == "0" {
 					continue
 				}
-				plist[preset.Id] = preset.Frequency
+				plist[preset.Id] = tunerPreset{
+					Frequency: preset.Frequency,
+					Band:      preset.Band,
+				}
 			}
 			// Put preset list in status struct
 			c.Status.Tuner.PresetList = plist
