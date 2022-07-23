@@ -88,7 +88,7 @@ type songTrack struct {
 // Tuner status
 type tuner struct {
 	Frequency  int                    // Tuner frequency
-	Preset     int                    // Tuner preset
+	Preset     int64                  // Tuner preset
 	PresetList map[string]tunerPreset // presets
 }
 

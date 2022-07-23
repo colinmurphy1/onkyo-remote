@@ -23,9 +23,6 @@
             band = "KHz"
             frequency = status.Tuner.Frequency
         }
-
-        // Convert preset from hexidecimal to decimal
-        preset = parseInt(status.Tuner.Preset, 16)
     }
 
     const handlePreset = async (event) => {

@@ -224,7 +224,7 @@ func (c *Connection) EiscpWatcher() {
 
 		// Tuner frequency
 		case "PRS":
-			c.Status.Tuner.Preset, _ = strconv.Atoi(cmdValue)
+			c.Status.Tuner.Preset, _ = strconv.ParseInt(cmdValue, 16, 64)
 			log.Printf("[Tuner]\tPreset: %d\n", c.Status.Tuner.Preset)
 
 		// Tuner preset
