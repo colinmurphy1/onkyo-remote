@@ -71,7 +71,7 @@ func (c *Connection) EiscpWatcher() {
 			}
 
 			c.Status.Input.HexCode = cmdValue
-			c.Status.Input.Name = Inputs[cmdValue]
+			c.Status.Input.Name = c.Inputs[cmdValue]
 
 			log.Printf("[Source]\t%s\n", c.Status.Input.Name)
 
@@ -166,7 +166,7 @@ func (c *Connection) EiscpWatcher() {
 			// NET Source (see data.go for options)
 			// This does show other information (such as if you like a song),
 			// but this isn't going to be too useful for the controller.
-			ns := NetServices[cmdValue[7:9]]
+			ns := netServices[cmdValue[7:9]]
 			if ns == "" {
 				ns = "Unknown"
 			}
@@ -224,6 +224,7 @@ func (c *Connection) EiscpWatcher() {
 
 		// Tuner frequency
 		case "PRS":
+			// Convert preset number from hexadecimal to int64
 			c.Status.Tuner.Preset, _ = strconv.ParseInt(cmdValue, 16, 64)
 			log.Printf("[Tuner]\tPreset: %d\n", c.Status.Tuner.Preset)
 
@@ -243,7 +244,7 @@ func (c *Connection) EiscpWatcher() {
 				log.Printf("[XML]\tError unmarshaling xml: %e\n", err)
 			}
 
-			// Put data in the correct locations of the Status struct
+			// Generate a tuner preset list to be stored in the Status struct
 			plist := make(map[string]tunerPreset)
 			for _, preset := range xmldata.Device.PresetList.Preset {
 				// Skip undefined presets
@@ -258,9 +259,23 @@ func (c *Connection) EiscpWatcher() {
 			// Put preset list in status struct
 			c.Status.Tuner.PresetList = plist
 
+			// Set friendly name, brand, and model number in Status struct
 			c.Status.Info.Brand = xmldata.Device.Brand
 			c.Status.Info.ModelName = xmldata.Device.ModelName
 			c.Status.Info.FriendlyName = xmldata.Device.FriendlyName
+
+			// Create a list of available inputs
+			c.Inputs = make(map[string]string) // Initialize map
+
+			for _, input := range xmldata.Device.InputList.Input {
+				// If an input is not enabled, or is input code 80, skip it
+				if !input.Enabled || input.Id == "80" {
+					continue
+				}
+				// Make hex code uppercase
+				srcId := strings.ToUpper(input.Id)
+				c.Inputs[srcId] = input.Name
+			}
 
 		// Ignore unknown commands
 		default:

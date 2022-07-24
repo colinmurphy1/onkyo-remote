@@ -6,14 +6,15 @@ import (
 
 // Struct that stores the connection to the receiver
 type Connection struct {
-	ip          string      // IP address of the Onkyo receiver
-	port        int         // ISCP port of the receiver (default 60128)
-	con         net.Conn    // Connection is stored here
-	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
-	iscpDest    byte        // ISCP destination (default 0x31)
-	Status      OnkyoStatus // Store state of receiver
-	AlbumArt    albumArt    // Album art
-	XmlData     string      // XML data for debugging
+	ip          string            // IP address of the Onkyo receiver
+	port        int               // ISCP port of the receiver (default 60128)
+	con         net.Conn          // Connection is stored here
+	iscpVersion byte              // ISCP version (default 0x1) (should not need changed)
+	iscpDest    byte              // ISCP destination (default 0x31)
+	Status      OnkyoStatus       // Store state of receiver
+	AlbumArt    albumArt          // Album art
+	XmlData     string            // XML data for debugging
+	Inputs      map[string]string // List of inputs
 }
 
 type receiverInfo struct {
@@ -98,69 +99,8 @@ type tunerPreset struct {
 }
 
 // =============================================================================
-// These structs are used for unmarshaling the XML retrieved from the receiver
-
-// Onkyo XML info
-type onkyoXML struct {
-	Device onkyoXMLDeviceInfo `xml:"device"`
-}
-
-// Device Info
-type onkyoXMLDeviceInfo struct {
-	Brand        string         `xml:"brand"`        // Brand (Onkyo, Integra, Pioneer?)
-	ModelName    string         `xml:"model"`        // Model number
-	FriendlyName string         `xml:"friendlyname"` // Friendly name (user-definable at web interface)
-	PresetList   onkyoXMLPreset `xml:"presetlist"`
-}
-
-// Preset list
-type onkyoXMLPreset struct {
-	Preset []onkyoXMLPresetItem `xml:"preset"`
-}
-
-// Preset
-type onkyoXMLPresetItem struct {
-	Id        string `xml:"id,attr"`   // Hexadecimal id
-	Frequency string `xml:"freq,attr"` // Frequency
-	Band      int    `xml:"band,attr"` // Band (0: Not Set, 1: FM, 2: AM)
-}
-
-// =============================================================================
-// Input names
-var Inputs = map[string]string{
-	"00": "VCR/DVR",
-	"01": "CBL/SAT",
-	"02": "GAME",
-	"03": "AUX",
-	"05": "PC",
-	"10": "BD/DVD",
-	"11": "STRM BOX",
-	"12": "TV",
-	"20": "TV/TAPE",
-	"22": "PHONO",
-	"23": "CD",
-	"24": "FM",
-	"25": "AM",
-	"26": "TUNER",
-	"27": "MUSIC SERVER",
-	"28": "INTERNET RADIO",
-	"29": "USB",
-	"31": "XM",
-	"32": "SIRIUS",
-	"33": "DAB",
-	"2B": "NETWORK",
-	"2C": "USB",
-	"2D": "AIRPLAY",
-	"2E": "BLUETOOTH",
-	"40": "UNIVERSAL PORT",
-}
-
-// Inputs not disabled in config.yaml (populated on program start)
-var EnabledInputs = map[string]string{}
-
-// =============================================================================
 // NET Services
-var NetServices = map[string]string{
+var netServices = map[string]string{
 	"00": "DLNA",
 	"01": "My Favorite",
 	"02": "vTuner",
