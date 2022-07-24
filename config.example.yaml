@@ -20,18 +20,3 @@ max_volume: 40
 logging:
   eiscp: false
   http: false
-
-# Input declarations
-# Only inputs specified here will be renamed from their defaults
-inputs:
-  - hex: 20
-    name: "TV Optical Out"
-
-# You may optionally specify any inputs that you do not want to display in the
-# input selector by specifying its associated hex code.
-hidden_inputs:
-  - 31
-  - 32
-  - 33
-  - 2D
-  - 40
