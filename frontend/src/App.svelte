@@ -17,6 +17,7 @@
 	let loadError = ""
 	let recvStatus
 	let recvSource
+	let pageTitle = ""
 
 	const updateStatus = async () => {
 		try {
@@ -28,6 +29,19 @@
 			loaded = false
 			loadError = err
 		}
+	}
+
+
+	// Sets the page title to the receiver's friendly name if specified,
+	// otherwise default to model number, and if that is not specified set a
+	// default title
+	const setPageTitle = (info) => {
+		if (info.FriendlyName != "") {
+			return info.FriendlyName
+		} else if (info.ModelName != "") {
+			return info.ModelName
+		}
+		return "Onkyo Remote"
 	}
 
     // API call to get all available inputs
@@ -48,11 +62,17 @@
 	onMount(async () => {
 		await updateStatus()
 		recvSource = await getSource()
+		pageTitle = setPageTitle(recvStatus.Info)
 	})
 
 	// Update status every second
 	setInterval(async () => await updateStatus(), 1000);
 </script>
+
+<svelte:head>
+	<title>{pageTitle}</title>
+</svelte:head>
+
 
 {#if loaded}
 	<Header status={recvStatus} sources={recvSource} />

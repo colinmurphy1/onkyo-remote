@@ -38,6 +38,4 @@ clean:
 
 # Start the development backend (needs a config.yaml in this directory to function)
 dev:
-	rm -rf static/*
-	echo "Start the frontend using <code>npm run dev</code> from within the <code>frontend/</code> directory" > static/index.html
 	go run *.go -config config.yaml

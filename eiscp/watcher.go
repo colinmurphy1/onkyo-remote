@@ -1,6 +1,7 @@
 package eiscp
 
 import (
+	"encoding/xml"
 	"log"
 	"strconv"
 	"strings"
@@ -38,7 +39,7 @@ func (c *Connection) EiscpWatcher() {
 				pwrStatus = true
 			}
 			c.Status.Power.Status = pwrStatus
-			log.Printf("Power set to %s\n", lib.TOp(pwrStatus, "ON", "OFF"))
+			log.Printf("[Power]\tStatus: %s\n", lib.TOp(pwrStatus, "ON", "OFF"))
 
 		// Get volume level
 		case "MVL":
@@ -48,7 +49,7 @@ func (c *Connection) EiscpWatcher() {
 				continue // ignore the error and don't continue
 			}
 			c.Status.Volume.Level = int(vol)
-			log.Printf("Volume set to %d\n", vol)
+			log.Printf("[Volume]\tLevel: %d\n", vol)
 
 		// Get mute status
 		case "AMT":
@@ -60,6 +61,7 @@ func (c *Connection) EiscpWatcher() {
 			}
 
 			c.Status.Volume.Mute = muteStatus
+			log.Printf("[Volume]\tMute: %s", lib.TOp(muteStatus, "ON", "OFF"))
 
 		// Get input
 		case "SLI":
@@ -69,9 +71,9 @@ func (c *Connection) EiscpWatcher() {
 			}
 
 			c.Status.Input.HexCode = cmdValue
-			c.Status.Input.Name = Inputs[cmdValue]
+			c.Status.Input.Name = c.Inputs[cmdValue]
 
-			log.Println("Source changed to", c.Status.Input.Name)
+			log.Printf("[Source]\t%s\n", c.Status.Input.Name)
 
 			// Reset unneeded status fields on source change
 			c.Status.Input.NetSource = ""
@@ -134,21 +136,21 @@ func (c *Connection) EiscpWatcher() {
 
 			// If title is not provided, attempt to get it `maxRetries` times
 			if c.Status.SongInfo.Title == "" || c.Status.SongInfo.Title == " " && titleRetries < maxRetries {
-				log.Printf("Asking receiver for track title (retry %d)\n", titleRetries)
+				log.Printf("[NET]\tAsking receiver for track title (retry %d)\n", titleRetries)
 				c.SendCmd("NTIQSTN")
 				titleRetries += 1
 			}
 
 			// If album is not provided, attempt to get it `maxRetries` times
 			if c.Status.SongInfo.Album == "" || c.Status.SongInfo.Album == " " && albumRetries < maxRetries {
-				log.Printf("Asking receiver for album name (retry %d)\n", albumRetries)
+				log.Printf("[NET]\tAsking receiver for album name (retry %d)\n", albumRetries)
 				c.SendCmd("NALQSTN")
 				albumRetries += 1
 			}
 
 			// If artist is not provided, attempt to get it `maxRetries` times
 			if c.Status.SongInfo.Artist == "" || c.Status.SongInfo.Artist == " " && artistRetries < maxRetries {
-				log.Printf("Asking receiver for artist name (retry %d)\n", artistRetries)
+				log.Printf("[NET]\tAsking receiver for artist name (retry %d)\n", artistRetries)
 				c.SendCmd("NATQSTN")
 				artistRetries += 1
 			}
@@ -164,12 +166,12 @@ func (c *Connection) EiscpWatcher() {
 			// NET Source (see data.go for options)
 			// This does show other information (such as if you like a song),
 			// but this isn't going to be too useful for the controller.
-			ns := NetServices[cmdValue[7:9]]
+			ns := netServices[cmdValue[7:9]]
 			if ns == "" {
 				ns = "Unknown"
 			}
 			c.Status.Input.NetSource = ns
-			log.Printf("NETWORK source is %s\n", ns)
+			log.Printf("[Source]\tNETWORK source is set to %s\n", ns)
 
 		// Jacket (Album artwork)
 		case "NJA":
@@ -222,11 +224,58 @@ func (c *Connection) EiscpWatcher() {
 
 		// Tuner frequency
 		case "PRS":
-			c.Status.Tuner.Preset, _ = strconv.Atoi(cmdValue)
+			// Convert preset number from hexadecimal to int64
+			c.Status.Tuner.Preset, _ = strconv.ParseInt(cmdValue, 16, 64)
+			log.Printf("[Tuner]\tPreset: %d\n", c.Status.Tuner.Preset)
 
 		// Tuner preset
 		case "TUN":
-			c.Status.Tuner.Frequency, _ = strconv.ParseFloat(cmdValue, 64)
+			c.Status.Tuner.Frequency, _ = strconv.Atoi(cmdValue)
+			log.Printf("[Tuner]\tFrequency: %d\n", c.Status.Tuner.Frequency)
+
+		// Receiver information in XML (NRI)
+		case "NRI":
+			// Store xml data for /api/xml debug endpoint
+			c.XmlData = cmdValue
+
+			// Unmarshal XML
+			xmldata := new(onkyoXML)
+			if err := xml.Unmarshal([]byte(c.XmlData), &xmldata); err != nil {
+				log.Printf("[XML]\tError unmarshaling xml: %e\n", err)
+			}
+
+			// Generate a tuner preset list to be stored in the Status struct
+			plist := make(map[string]tunerPreset)
+			for _, preset := range xmldata.Device.PresetList.Preset {
+				// Skip undefined presets
+				if preset.Frequency == "0" {
+					continue
+				}
+				plist[preset.Id] = tunerPreset{
+					Frequency: preset.Frequency,
+					Band:      preset.Band,
+				}
+			}
+			// Put preset list in status struct
+			c.Status.Tuner.PresetList = plist
+
+			// Set friendly name, brand, and model number in Status struct
+			c.Status.Info.Brand = xmldata.Device.Brand
+			c.Status.Info.ModelName = xmldata.Device.ModelName
+			c.Status.Info.FriendlyName = xmldata.Device.FriendlyName
+
+			// Create a list of available inputs
+			c.Inputs = make(map[string]string) // Initialize map
+
+			for _, input := range xmldata.Device.InputList.Input {
+				// If an input is not enabled, or is input code 80, skip it
+				if !input.Enabled || input.Id == "80" {
+					continue
+				}
+				// Make hex code uppercase
+				srcId := strings.ToUpper(input.Id)
+				c.Inputs[srcId] = input.Name
+			}
 
 		// Ignore unknown commands
 		default:

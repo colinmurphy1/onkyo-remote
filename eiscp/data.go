@@ -1,25 +1,36 @@
 package eiscp
 
-import "net"
+import (
+	"net"
+)
 
 // Struct that stores the connection to the receiver
 type Connection struct {
-	ip          string      // IP address of the Onkyo receiver
-	port        int         // ISCP port of the receiver (default 60128)
-	con         net.Conn    // Connection is stored here
-	iscpVersion byte        // ISCP version (default 0x1) (should not need changed)
-	iscpDest    byte        // ISCP destination (default 0x31)
-	Status      OnkyoStatus // Store status of receiver
-	AlbumArt    albumArt    // Album art
+	ip          string            // IP address of the Onkyo receiver
+	port        int               // ISCP port of the receiver (default 60128)
+	con         net.Conn          // Connection is stored here
+	iscpVersion byte              // ISCP version (default 0x1) (should not need changed)
+	iscpDest    byte              // ISCP destination (default 0x31)
+	Status      OnkyoStatus       // Store state of receiver
+	AlbumArt    albumArt          // Album art
+	XmlData     string            // XML data for debugging
+	Inputs      map[string]string // List of inputs
 }
 
-// Struct that stores the general status of the receiver
+type receiverInfo struct {
+	Brand        string // Brand (Onkyo, Integra, Pioneer?)
+	ModelName    string // Model number
+	FriendlyName string // Friendly name (user-definable at web interface)
+}
+
+// Struct that stores the current state of the receiver
 type OnkyoStatus struct {
-	Power    power    // Power status
-	Input    input    // Input source
-	Volume   volume   // Volume status
-	SongInfo songInfo // Song information
-	Tuner    tuner    // Tuner status
+	Power    power        // Power status
+	Input    input        // Input source
+	Volume   volume       // Volume status
+	SongInfo songInfo     // Song information
+	Tuner    tuner        // Tuner status
+	Info     receiverInfo // Information about the receiver
 }
 
 // Power status
@@ -77,44 +88,19 @@ type songTrack struct {
 
 // Tuner status
 type tuner struct {
-	Frequency float64 // Tuner frequency
-	Preset    int     // Tuner preset
+	Frequency  int                    // Tuner frequency
+	Preset     int64                  // Tuner preset
+	PresetList map[string]tunerPreset // presets
 }
 
-// Input names
-var Inputs = map[string]string{
-	"00": "VCR/DVR",
-	"01": "CBL/SAT",
-	"02": "GAME",
-	"03": "AUX",
-	"05": "PC",
-	"10": "BD/DVD",
-	"11": "STRM BOX",
-	"12": "TV",
-	"20": "TV/TAPE",
-	"22": "PHONO",
-	"23": "CD",
-	"24": "FM",
-	"25": "AM",
-	"26": "TUNER",
-	"27": "MUSIC SERVER",
-	"28": "INTERNET RADIO",
-	"29": "USB",
-	"31": "XM",
-	"32": "SIRIUS",
-	"33": "DAB",
-	"2B": "NETWORK",
-	"2C": "USB",
-	"2D": "AIRPLAY",
-	"2E": "BLUETOOTH",
-	"40": "UNIVERSAL PORT",
+type tunerPreset struct {
+	Frequency string // Tuner frequency
+	Band      int    // Band (0: No preset, 1: FM, 2: AM)
 }
 
-// Inputs not disabled in config.yaml (populated on program start)
-var EnabledInputs = map[string]string{}
-
+// =============================================================================
 // NET Services
-var NetServices = map[string]string{
+var netServices = map[string]string{
 	"00": "DLNA",
 	"01": "My Favorite",
 	"02": "vTuner",
@@ -141,6 +127,8 @@ var NetServices = map[string]string{
 	"F4": "Bluetooth",
 }
 
+// =============================================================================
+// ALBUM ART
 type albumArt struct {
 	Data        []byte // Binary image data
 	ContentType string // Content type (eg. image/jpeg)

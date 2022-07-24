@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
@@ -12,25 +13,25 @@ import (
 func SetSource(c *gin.Context) {
 	source := c.Param("sourceID")
 
-	// Make source uppercase in the event a lowercase hex value is provided
+	// Make source uppercase as the key is uppercase
 	source = strings.ToUpper(source)
 
 	// Verify that the source is valid
-	if _, ok := eiscp.Inputs[source]; !ok {
-		lib.Response(c, 400, "Invalid input, expected HEX code", nil)
+	if _, ok := eiscp.Conn.Inputs[source]; !ok {
+		lib.Response(c, 400, "Invalid input code specified", nil)
 		return
 	}
 
-	err := eiscp.Conn.SendCmd("SLI" + source)
-	if err != nil {
+	// Send source change command
+	if err := eiscp.Conn.SendCmd("SLI" + source); err != nil {
 		lib.Response(c, 500, "Error", err)
 		return
 	}
 
-	lib.Response(c, 200, "Source set to "+eiscp.Inputs[source], nil)
+	lib.Response(c, 200, fmt.Sprintf("Source set to %s", eiscp.Conn.Inputs[source]), nil)
 }
 
 // Return source list
 func GetSource(c *gin.Context) {
-	lib.Response(c, 200, "OK", eiscp.EnabledInputs)
+	lib.Response(c, 200, "OK", eiscp.Conn.Inputs)
 }

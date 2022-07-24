@@ -51,7 +51,7 @@ func main() {
 		routes.GET("/source", api.GetSource)
 		routes.GET("/source/:sourceID", api.SetSource)
 
-		// RAW COMMAND
+		// RAW COMMAND (if debug tools are enabled)
 		routes.GET("/raw/:command", api.SendRaw)
 
 		// ON-SCREEN DISPLAY
@@ -63,8 +63,14 @@ func main() {
 		// NET TRACK UPDATE
 		routes.GET("/net/update", api.NetTrackUpdate)
 
+		// TUNER PRESET
+		routes.GET("/tuner/preset/:preset", api.SetTunerPreset)
+
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
+
+		// XML DATA (if debug tools are enabled)
+		routes.GET("/xml", api.ReceiverXml)
 	}
 
 	// Web remote control
