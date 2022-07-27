@@ -3,6 +3,8 @@ package api
 import (
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/colinmurphy1/onkyo-remote/eiscp"
 	"github.com/colinmurphy1/onkyo-remote/lib"
@@ -15,7 +17,7 @@ func SetTunerPreset(c *gin.Context) {
 
 	// Preset must be two chars in length
 	if len(presetId) != 2 {
-		lib.Response(c, http.StatusBadRequest, "Preset ID be exactly two characters in length", nil)
+		lib.Response(c, http.StatusBadRequest, "Preset ID must be exactly 2 characters in length", nil)
 		return
 	}
 
@@ -32,4 +34,35 @@ func SetTunerPreset(c *gin.Context) {
 	}
 
 	lib.Response(c, http.StatusOK, fmt.Sprintf("Tuned to preset %s", presetId), nil)
+}
+
+// Tunes to the specified frequency
+func SetTunerFrequency(c *gin.Context) {
+	freq := c.Param("freq")
+
+	// Remove "." from frequency
+	freq = strings.Replace(freq, ".", "", 1)
+
+	if len(freq) != 5 {
+		lib.Response(c, http.StatusBadRequest, "Frequency must be exactly 5 characters in length", nil)
+		return
+	}
+
+	// Frequency must be an number (period is ok, as it was removed previously)
+	if _, err := strconv.Atoi(freq); err != nil {
+		lib.Response(c, http.StatusBadRequest, "Specified frequency is not an integer", nil)
+		return
+	}
+
+	// Attempt to tune to frequency
+	// We do not need to determine if the frequency is an AM or FM frequency; the receiver will automatically determine this
+	if err := eiscp.Conn.SendCmd(fmt.Sprintf("TUN%s", freq)); err != nil {
+		lib.Response(c, http.StatusOK, "Error tuning to frequency", nil)
+		return
+	}
+
+	// TODO: Implement a feature to look for N/A responses in the watcher so we can display an error message if an invalid frequency is passed
+
+	// Return 200 OK response
+	lib.Response(c, http.StatusOK, "OK", nil)
 }

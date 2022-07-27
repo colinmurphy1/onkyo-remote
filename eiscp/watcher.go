@@ -30,6 +30,11 @@ func (c *Connection) EiscpWatcher() {
 		cmd = response[2:5]     // iscp command
 		cmdValue = response[5:] // iscp command value
 
+		// Skip invalid responses
+		if cmdValue == "N/A" {
+			continue
+		}
+
 		switch cmd {
 		// Get power status
 		case "PWR":
@@ -65,11 +70,6 @@ func (c *Connection) EiscpWatcher() {
 
 		// Get input
 		case "SLI":
-			// Skip sources that do not exist
-			if cmdValue == "N/A" {
-				continue
-			}
-
 			c.Status.Input.HexCode = cmdValue
 			c.Status.Input.Name = c.Inputs[cmdValue]
 

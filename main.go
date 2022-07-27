@@ -66,6 +66,9 @@ func main() {
 		// TUNER PRESET
 		routes.GET("/tuner/preset/:preset", api.SetTunerPreset)
 
+		// TUNER FREQUENCY SET
+		routes.GET("/tuner/tune/:freq", api.SetTunerFrequency)
+
 		// ALBUM ART
 		routes.GET("/art", api.GetArt)
 
